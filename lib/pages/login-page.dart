@@ -146,13 +146,17 @@ class _LoginState extends State<Login> {
               },
               onSaved: (_) {
                 if (_formKey.currentState!.validate()) {
+                  //Saving the password
                   savePassword(_controller.text);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => AccountCreationPage(),
-                    ),
-                  );
+
+                  //Clearing navigation stack
+                  Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => AccountCreationPage(
+                                isNewUser: widget.isNewUser,
+                              )),
+                      (route) => false);
                 }
               },
             ),
