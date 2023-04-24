@@ -28,7 +28,7 @@ class _AccountCreationPageState extends State<AccountCreationPage> {
       AccountDbHelper.instance.insertAccount(accountModel).then((_) {
         if(widget.isNewUser) {
           //Clearing navigation stack and navigating to home page
-          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_) => HomePage()), (route)=>false);
+          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_) => HomePage(pageIndex: 0,)), (route)=>false);
         }
         else{
           //Navigation stack .... -> older Accounts Page -> Account creation page

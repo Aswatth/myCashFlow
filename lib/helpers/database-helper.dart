@@ -1,6 +1,8 @@
 import 'dart:io';
 
+import 'package:my_cash_flow/models/account-model.dart';
 import 'package:my_cash_flow/models/password-model.dart';
+import 'package:my_cash_flow/models/transaction-model.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -34,5 +36,7 @@ class DatabaseHelper{
   }
   _onCreate(){
     PasswordDbHelper.instance;// Instantiate password table
+    AccountDbHelper.instance; //Instantiate account table
+    TransactionDbHelper.instance; //Instantiate transaction table
   }
 }

@@ -7,7 +7,8 @@ import 'package:my_cash_flow/pages/profile-page.dart';
 import 'package:my_cash_flow/pages/transaction-page.dart';
 
 class HomePage extends StatefulWidget {
-  HomePage({Key? key}) : super(key: key);
+  int pageIndex = 0;
+  HomePage({Key? key, required this.pageIndex}) : super(key: key);
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -22,7 +23,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-
+    _selectedIndex = widget.pageIndex;
     //print(jsonEncode(widget.accountModel.toJson()));
 
     _widgets = <Widget>[
