@@ -18,6 +18,8 @@ class _TransactionPageState extends State<TransactionPage> {
 
   String currency = "";
 
+  NumberFormat formatter = NumberFormat("#,###,###");
+
   getTransactions() async {
     AccountModel? selectedAccount = await AccountDbHelper.instance.getSelectedAccount();
 
@@ -73,7 +75,7 @@ class _TransactionPageState extends State<TransactionPage> {
               leading: transactionModel.transactionType == TransactionType.CREDIT? Icon(Icons.arrow_circle_up, color: Colors.green,) :Icon(Icons.arrow_circle_down, color: Colors.red,),
               title: Text(transactionModel.comments),
               subtitle: Text(DateFormat("dd-MMM-yyyy").format(transactionModel.transactionDate!).toString()),
-              trailing: Text("$currency ${transactionModel.amount!.toStringAsFixed(2)}"),
+              trailing: Text("$currency ${formatter.format(transactionModel.amount!)}"),
               onLongPress: (){
                 deleteTransaction(transactionModel.id!);
               },

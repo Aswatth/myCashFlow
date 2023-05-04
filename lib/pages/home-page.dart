@@ -17,7 +17,7 @@ class _HomePageState extends State<HomePage> {
   double creditedAmount = 0;
   double debitedAmount = 0;
 
-  NumberFormat formatter = NumberFormat("#,##,###");
+  NumberFormat formatter = NumberFormat("#,###,###");
 
   getData() async {
     AccountModel? selectedAccount =
