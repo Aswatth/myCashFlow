@@ -16,7 +16,7 @@ class _AccountPageState extends State<AccountPage> {
 
   fetchData() async {
     _accountModelList = await AccountDbHelper.instance.getAllAccounts();
-    _selectedAccountId = await AccountDbHelper.instance.getSelectedAccount();
+    _selectedAccountId = await AccountDbHelper.instance.getSelectedAccountId();
     setState(() {});
   }
 

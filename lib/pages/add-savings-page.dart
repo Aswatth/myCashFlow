@@ -15,7 +15,7 @@ class _AddSavingsPageState extends State<AddSavingsPage> {
   double _percentageToSave = 0;
 
   Future<void> saveToDb() async {
-    int accountId = await AccountDbHelper.instance.getSelectedAccount();
+    int accountId = await AccountDbHelper.instance.getSelectedAccountId();
 
     savingsModel.accountId = accountId;
 

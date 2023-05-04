@@ -15,7 +15,7 @@ class _InvestmentPageState extends State<InvestmentPage> {
   List<InvestmentModel> investmentModelList = [];
 
   getAll() async {
-    int accountId = await AccountDbHelper.instance.getSelectedAccount();
+    int accountId = await AccountDbHelper.instance.getSelectedAccountId();
     investmentModelList = await InvestmentDbHelper.instance.getAll(accountId);
     setState(() {
 

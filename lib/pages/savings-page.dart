@@ -16,7 +16,7 @@ class _SavingsPageState extends State<SavingsPage> {
   double currentBalance = 0;
 
   getAll() async {
-    int accountId = await AccountDbHelper.instance.getSelectedAccount();
+    int accountId = await AccountDbHelper.instance.getSelectedAccountId();
 
     AccountModel? accountModel = await AccountDbHelper.instance.getAccount(accountId);
     if(accountModel != null){

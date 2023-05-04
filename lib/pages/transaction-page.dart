@@ -17,7 +17,7 @@ class _TransactionPageState extends State<TransactionPage> {
   List<TransactionModel> transactionList = [];
 
   getTransactions() async {
-    int selectedAccountId = await AccountDbHelper.instance.getSelectedAccount();
+    int selectedAccountId = await AccountDbHelper.instance.getSelectedAccountId();
     List<TransactionModel> data =
         await TransactionDbHelper.instance.getAll(selectedAccountId);
 

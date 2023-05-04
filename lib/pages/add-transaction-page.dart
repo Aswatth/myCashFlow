@@ -20,7 +20,7 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   saveTransaction() async {
-    int selectedAccountId = await AccountDbHelper.instance.getSelectedAccount();
+    int selectedAccountId = await AccountDbHelper.instance.getSelectedAccountId();
     transactionModel.transactionType = _selectedTransactionType;
     transactionModel.accountId = selectedAccountId;
 

@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:my_cash_flow/helpers/database-helper.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -55,13 +57,21 @@ class AccountDbHelper {
     return null;
   }
 
-  Future<int> getSelectedAccount()async{
+  Future<int> getSelectedAccountId()async{
+    AccountModel? account = await getSelectedAccount();
+    if(account != null) {
+      return account.id!;
+    }
+    return 0;
+  }
+
+  Future<AccountModel?> getSelectedAccount()async{
     Database db = await DatabaseHelper.instance.database;
     List<Map<String, dynamic>> data = await db.query(tableName, where: '$_isSelected = ?', whereArgs: [1]);
     if(data.isNotEmpty){
-      return AccountModel.fromJson(data.first).id!;
+      return AccountModel.fromJson(data.first);
     }
-    return 0;
+    return null;
   }
   
   Future<List<AccountModel>> getAllAccounts() async{

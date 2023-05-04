@@ -14,7 +14,7 @@ class _AddInvestmentPageState extends State<AddInvestmentPage> {
   InvestmentModel investmentModel = InvestmentModel();
 
   Future<void> saveToDb() async {
-    int accountId = await AccountDbHelper.instance.getSelectedAccount();
+    int accountId = await AccountDbHelper.instance.getSelectedAccountId();
 
     investmentModel.accountId = accountId;
 
