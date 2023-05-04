@@ -22,7 +22,7 @@ class _BudgetPageState extends State<BudgetPage> {
       child: Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: false,
-          title: const Center(child: Text("Budgets"),),
+          title: Text("Budgets"),
           actions: [
             IconButton(onPressed: (){
               if(_selectedTabIndex == 0){
@@ -37,7 +37,7 @@ class _BudgetPageState extends State<BudgetPage> {
             tabs: [
               Text("Savings"),
               Text("Investments"),
-            ],
+            ].map((e) => Padding(padding: const EdgeInsets.all(10.0),child: e,)).toList(),
             onTap: (index){
               setState(() {
                 _selectedTabIndex = index;

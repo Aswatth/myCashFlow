@@ -14,22 +14,41 @@ class _SavingsPageState extends State<SavingsPage> {
   List<SavingsModel> savingsModelList = [];
 
   double currentBalance = 0;
+  String currency = "";
 
   getAll() async {
-    int accountId = await AccountDbHelper.instance.getSelectedAccountId();
+    AccountModel? accountModel =
+        await AccountDbHelper.instance.getSelectedAccount();
 
-    AccountModel? accountModel = await AccountDbHelper.instance.getAccount(accountId);
-    if(accountModel != null){
+    if (accountModel != null) {
       currentBalance = accountModel.currentBalance;
-    }
 
-    savingsModelList = await SavingsDbHelper.instance.getAll(accountId);
-    setState(() {});
+      currency = accountModel.currency;
+
+      savingsModelList =
+          await SavingsDbHelper.instance.getAll(accountModel.id!);
+
+      setState(() {});
+    }
   }
 
   delete(int savingsId) async {
     await SavingsDbHelper.instance.delete(savingsId);
     getAll();
+  }
+
+  double getCurrentAmount(int percentage) {
+    return (percentage / 100) * currentBalance;
+  }
+
+  double normalizeValue(double currentValue, double targetValue) {
+    return currentValue / targetValue;
+  }
+
+  Color getValueColor(double value) {
+    if (value >= 1) return Colors.greenAccent;
+    if (value >= 0.5) return Colors.blueAccent;
+    return Colors.redAccent;
   }
 
   @override
@@ -45,29 +64,55 @@ class _SavingsPageState extends State<SavingsPage> {
       itemBuilder: (context, index) {
         SavingsModel savingsModel = savingsModelList[index];
         return GestureDetector(
-          onLongPress: (){
+          onLongPress: () {
             delete(savingsModel.id!);
           },
           child: Card(
-            child: Column(
-              children: [
-                ListTile(
-                  title: Text("Saving name:"),
-                  trailing: Text("${savingsModel.savingName}"),
-                ),
-                ListTile(
-                  title: Text("Percentage to save:"),
-                  trailing: Text("${savingsModel.percentage}"),
-                ),
-                ListTile(
-                  title: Text("Amount saved so far"),
-                  trailing: Text("${currentBalance * (savingsModel.percentage / 100)}"),
-                ),
-                ListTile(
-                  title: Text("Target amount:"),
-                  trailing: Text("${savingsModel.targetAmount}"),
-                )
-              ],
+            child: Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "${savingsModel.savingName}",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 20),
+                      ),
+                      Text("${savingsModel.percentage}% of ${currency} ${currentBalance.toStringAsFixed(2)}")
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "${currency} ${getCurrentAmount(savingsModel.percentage).toStringAsFixed(2)}",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      Text(
+                        "Target: ${currency} ${savingsModel.targetAmount.toStringAsFixed(2)}",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      )
+                    ],
+                  ),
+                  LinearProgressIndicator(
+                    value: normalizeValue(
+                        getCurrentAmount(savingsModel.percentage),
+                        currentBalance),
+                    backgroundColor: Colors.grey[300],
+                    valueColor: AlwaysStoppedAnimation<Color>(getValueColor(
+                        normalizeValue(
+                            getCurrentAmount(savingsModel.percentage),
+                            currentBalance))),
+                  )
+                ]
+                    .map((e) => Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: e,
+                        ))
+                    .toList(),
+              ),
             ),
           ),
         );
