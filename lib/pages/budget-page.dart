@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:my_cash_flow/pages/add-savings-page.dart';
+import 'package:my_cash_flow/pages/investment-page.dart';
+import 'package:my_cash_flow/pages/savings-page.dart';
 
 class BudgetPage extends StatefulWidget {
   const BudgetPage({Key? key}) : super(key: key);
@@ -8,10 +11,44 @@ class BudgetPage extends StatefulWidget {
 }
 
 class _BudgetPageState extends State<BudgetPage> {
+
+  int _selectedTabIndex = 0;
+
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Text("This is a budget page"),
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          title: const Center(child: Text("Budgets"),),
+          actions: [
+            IconButton(onPressed: (){
+              if(_selectedTabIndex == 0){
+                Navigator.push(context, MaterialPageRoute(builder: (context) => AddSavingsPage(),));
+              }
+              print(_selectedTabIndex);
+            }, icon: Icon(Icons.add))
+          ],
+          bottom: TabBar(
+            tabs: [
+              Text("Savings"),
+              Text("Investments"),
+            ],
+            onTap: (index){
+              setState(() {
+                _selectedTabIndex = index;
+              });
+            },
+          ),
+        ),
+        body: TabBarView(
+          children: [
+            SavingsPage(),
+            InvestmentPage()
+          ],
+        ),
+      ),
     );
   }
 }
