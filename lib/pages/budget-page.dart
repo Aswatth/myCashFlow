@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_cash_flow/pages/add-investment-page.dart';
 import 'package:my_cash_flow/pages/add-savings-page.dart';
 import 'package:my_cash_flow/pages/investment-page.dart';
 import 'package:my_cash_flow/pages/savings-page.dart';
@@ -27,7 +28,9 @@ class _BudgetPageState extends State<BudgetPage> {
               if(_selectedTabIndex == 0){
                 Navigator.push(context, MaterialPageRoute(builder: (context) => AddSavingsPage(),));
               }
-              print(_selectedTabIndex);
+              else{
+                Navigator.push(context, MaterialPageRoute(builder: (context) => AddInvestmentPage(),));
+              }
             }, icon: Icon(Icons.add))
           ],
           bottom: TabBar(
