@@ -1,5 +1,6 @@
 import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:lite_rolling_switch/lite_rolling_switch.dart';
 import 'package:my_cash_flow/models/account-model.dart';
 import 'package:my_cash_flow/models/transaction-model.dart';
 import 'package:my_cash_flow/models/transactionTypeEnum.dart';
@@ -20,16 +21,21 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   saveTransaction() async {
-    int selectedAccountId = await AccountDbHelper.instance.getSelectedAccountId();
+    int selectedAccountId =
+        await AccountDbHelper.instance.getSelectedAccountId();
     transactionModel.transactionType = _selectedTransactionType;
     transactionModel.accountId = selectedAccountId;
 
     //print(transactionModel.toJson());
-    TransactionDbHelper.instance.insert(transactionModel).then((value){
+    TransactionDbHelper.instance.insert(transactionModel).then((value) {
       Navigator.pop(context); //Popping add transaction page
       Navigator.pop(context); //Popping old transaction page
 
-      Navigator.push(context, MaterialPageRoute(builder: (context) => BasePage(pageIndex: 1),));
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => BasePage(pageIndex: 1),
+          ));
     });
     /*if(_formKey.currentState!.validate()){
 
@@ -46,105 +52,143 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Add transaction"),
+        title: const Text("Add transaction"),
       ),
-      body: Column(
+      body: Form(
+          child: ListView(
         children: [
-          Form(child:
-            Column(
-              children: [
-                ListTile(
-                    leading: Icon(Icons.calendar_today),
-                    title: DateTimePicker(
-                      //key: _formKey,
-                      type: DateTimePickerType.dateTime,
-                      dateMask: "dd-MMM-yyyy",
-                      firstDate: DateTime(1999),
-                      lastDate: DateTime(2100),
-                      validator: (value){
-                        if(value == null || value.isEmpty) {
-                          return "Date cannot be empty";
-                        }
-                        return null;
-                      },
-                      onChanged: (String? _) {
-                        setState(() {
-                          transactionModel.transactionDate = DateTime.parse(_!);
-                          print(transactionModel.transactionDate);
-                        });
-                      },
-                    )),
-                ListTile(
-                  leading: Icon(Icons.currency_exchange),
-                  title: TextFormField(
-                    //key: _formKey,
-                    keyboardType: TextInputType.number,
-                    decoration: InputDecoration(hintText: "Amount"),
-                    validator: (String? value){
-                      if(value == null || value.isEmpty) {
-                        return "Amount cannot be empty";
-                      }
-                      return null;
-                    },
-                    onChanged: (_) {
-                      transactionModel.amount = double.parse(_);
-                    },
-                  ),
-                ),
-                ListTile(
-                  leading: Icon(Icons.comment),
-                  title: TextFormField(
-                    //key: _formKey,
-                    keyboardType: TextInputType.text,
-                    maxLength: 25,
-                    decoration: InputDecoration(hintText: "Comments"),
-                    onChanged: (_) {
-                      transactionModel.comments = _;
-                    },
-                  ),
-                ),
-                ListTile(
-                  leading: Icon(Icons.account_balance),
-                  title: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      ActionChip(
-                        label: Text("Credit"),
-                        onPressed: () {
-                          setState(() {
-                            _selectedTransactionType = TransactionType.CREDIT;
-                          });
-                        },
-                        backgroundColor:
-                        _selectedTransactionType == TransactionType.CREDIT
-                            ? Colors.greenAccent
-                            : Colors.grey,
-                      ),
-                      ActionChip(
-                        label: Text("Debit"),
-                        onPressed: () {
-                          setState(() {
-                            _selectedTransactionType = TransactionType.DEBIT;
-                          });
-                        },
-                        backgroundColor:
-                        _selectedTransactionType == TransactionType.DEBIT
-                            ? Colors.greenAccent
-                            : Colors.grey,
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            )
+          DateTimePicker(
+            decoration: const InputDecoration(
+              prefixIcon: Icon(Icons.calendar_today),
+              enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                  borderSide: BorderSide(
+                    color: Color(0xFF1C2536),
+                  )),
+              focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                  borderSide: BorderSide(
+                    color: Color(0xFF1C2536),
+                  )),
+            ),
+            //key: _formKey,
+            type: DateTimePickerType.date,
+            dateMask: "dd-MMM-yyyy",
+            firstDate: DateTime(1999),
+            lastDate: DateTime(2100),
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return "Date cannot be empty";
+              }
+              return null;
+            },
+            onChanged: (String? _) {
+              setState(() {
+                transactionModel.transactionDate = DateTime.parse(_!);
+                print(transactionModel.transactionDate);
+              });
+            },
           ),
-          TextButton(
+          TextFormField(
+            //key: _formKey,
+            keyboardType: TextInputType.number,
+            decoration: const InputDecoration(
+              hintText: "Transaction amount",
+              prefixIcon: Icon(Icons.currency_exchange),
+              enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                  borderSide: BorderSide(
+                    color: Color(0xFF1C2536),
+                  )),
+              focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                  borderSide: BorderSide(
+                    color: Color(0xFF1C2536),
+                  )),
+            ),
+            validator: (String? value) {
+              if (value == null || value.isEmpty) {
+                return "Amount cannot be empty";
+              }
+              return null;
+            },
+            onChanged: (_) {
+              transactionModel.amount = double.parse(_);
+            },
+          ),
+          TextFormField(
+            //key: _formKey,
+            keyboardType: TextInputType.text,
+            maxLength: 25,
+            decoration: const InputDecoration(
+              hintText: "Transaction name",
+              prefixIcon: Icon(Icons.text_snippet),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                borderSide: BorderSide(
+                  color: Color(0xFF1C2536),
+                ),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                borderSide: BorderSide(
+                  color: Color(0xFF1C2536),
+                ),
+              ),
+            ),
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return "Comments cannot be empty";
+              }
+              return null;
+            },
+            onChanged: (_) {
+              transactionModel.comments = _;
+            },
+          ),
+          ListTile(
+            shape: RoundedRectangleBorder(
+                side: BorderSide(width: 1),
+                borderRadius: BorderRadius.circular(20.0)),
+            title: Text("Transaction type"),
+            trailing: LiteRollingSwitch(
+              value: _selectedTransactionType == TransactionType.CREDIT,
+              textOn: "Credit",
+              textOff: "Debit",
+              colorOn: Colors.greenAccent,
+              colorOff: Colors.redAccent,
+              iconOn: Icons.arrow_circle_up,
+              iconOff: Icons.arrow_circle_down,
+              onChanged: (bool value) {
+                setState(() {
+                  _selectedTransactionType =
+                      value ? TransactionType.CREDIT : TransactionType.DEBIT;
+                });
+              },
+              onSwipe: () {},
+              onTap: () {},
+              onDoubleTap: () {},
+            ),
+          ),
+          Container(
+            decoration: BoxDecoration(
+              color: const Color(0xFF1C2536),
+              borderRadius: BorderRadius.circular(20.0)
+            ),
+            child: TextButton(
               onPressed: () {
                 saveTransaction();
               },
-              child: Text("Save"))
-        ],
-      ),
+              child: Text("Save", style: TextStyle(color: Colors.white),),
+            ),
+          )
+        ]
+            .map((e) => Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: e,
+                ))
+            .toList(),
+      )),
     );
   }
 }

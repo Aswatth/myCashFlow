@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:intl/intl.dart';
 import 'package:my_cash_flow/models/transaction-model.dart';
 import 'package:my_cash_flow/models/transactionTypeEnum.dart';
 import 'package:my_cash_flow/pages/add-transaction-page.dart';
@@ -16,14 +16,19 @@ class TransactionPage extends StatefulWidget {
 class _TransactionPageState extends State<TransactionPage> {
   List<TransactionModel> transactionList = [];
 
-  getTransactions() async {
-    int selectedAccountId = await AccountDbHelper.instance.getSelectedAccountId();
-    List<TransactionModel> data =
-        await TransactionDbHelper.instance.getAll(selectedAccountId);
+  String currency = "";
 
-    setState(() {
-      transactionList = data;
-    });
+  getTransactions() async {
+    AccountModel? selectedAccount = await AccountDbHelper.instance.getSelectedAccount();
+
+    if(selectedAccount != null){
+      transactionList =
+      await TransactionDbHelper.instance.getAll(selectedAccount.id!);
+
+      setState(() {
+        currency = selectedAccount.currency;
+      });
+    }
   }
 
   deleteTransaction(int id) async {
@@ -60,25 +65,18 @@ class _TransactionPageState extends State<TransactionPage> {
         itemCount: transactionList.length,
         itemBuilder: (context, index) {
           TransactionModel transactionModel = transactionList[index];
-          return Slidable(
-            endActionPane: ActionPane(
-              motion: const BehindMotion(),
-              children: [
-                SlidableAction(
-                    icon: Icons.delete,
-                    backgroundColor: Colors.redAccent,
-                    onPressed: (_) {
-                      deleteTransaction(transactionList[index].id!);
-                    }),
-              ],
+          return Card(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20.0)
             ),
             child: ListTile(
-              title: Text(transactionModel.amount.toString()),
-              subtitle: Text(transactionModel.transactionDate.toString()),
-              trailing:
-                  transactionModel.transactionType == TransactionType.CREDIT
-                      ? const Text("CREDIT")
-                      : const Text("DEBIT"),
+              leading: transactionModel.transactionType == TransactionType.CREDIT? Icon(Icons.arrow_circle_up, color: Colors.green,) :Icon(Icons.arrow_circle_down, color: Colors.red,),
+              title: Text(transactionModel.comments),
+              subtitle: Text(DateFormat("dd-MMM-yyyy").format(transactionModel.transactionDate!).toString()),
+              trailing: Text("$currency ${transactionModel.amount!.toStringAsFixed(2)}"),
+              onLongPress: (){
+                deleteTransaction(transactionModel.id!);
+              },
             ),
           );
         },
