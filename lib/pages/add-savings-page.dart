@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:my_cash_flow/models/account-model.dart';
 import 'package:my_cash_flow/models/savings-model.dart';
-import 'package:my_cash_flow/pages/home-page.dart';
+import 'package:my_cash_flow/pages/base-page.dart';
 
 class AddSavingsPage extends StatefulWidget {
   const AddSavingsPage({Key? key}) : super(key: key);
@@ -30,7 +30,7 @@ class _AddSavingsPageState extends State<AddSavingsPage> {
       Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => HomePage(pageIndex: 2),
+            builder: (context) => BasePage(pageIndex: 2),
           ));
     });
   }

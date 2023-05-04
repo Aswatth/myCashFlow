@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:my_cash_flow/models/account-model.dart';
 import 'package:my_cash_flow/models/investment-model.dart';
-import 'package:my_cash_flow/pages/home-page.dart';
+import 'package:my_cash_flow/pages/base-page.dart';
 
 class AddInvestmentPage extends StatefulWidget {
   const AddInvestmentPage({Key? key}) : super(key: key);
@@ -29,7 +29,7 @@ class _AddInvestmentPageState extends State<AddInvestmentPage> {
       Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => HomePage(pageIndex: 2),
+            builder: (context) => BasePage(pageIndex: 2),
           ));
     });
   }

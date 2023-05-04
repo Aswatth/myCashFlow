@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:my_cash_flow/models/account-model.dart';
 import 'package:my_cash_flow/pages/accounts-page.dart';
-import 'package:my_cash_flow/pages/home-page.dart';
+import 'package:my_cash_flow/pages/base-page.dart';
 
 class AccountCreationPage extends StatefulWidget {
   bool isNewUser = false;
@@ -28,7 +28,7 @@ class _AccountCreationPageState extends State<AccountCreationPage> {
       AccountDbHelper.instance.insertAccount(accountModel).then((_) {
         if(widget.isNewUser) {
           //Clearing navigation stack and navigating to home page
-          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_) => HomePage(pageIndex: 0,)), (route)=>false);
+          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_) => BasePage(pageIndex: 0,)), (route)=>false);
         }
         else{
           //Navigation stack .... -> older Accounts Page -> Account creation page

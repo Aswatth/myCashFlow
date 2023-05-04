@@ -1,20 +1,18 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:my_cash_flow/models/account-model.dart';
 import 'package:my_cash_flow/pages/budget-page.dart';
+import 'package:my_cash_flow/pages/home-page.dart';
 import 'package:my_cash_flow/pages/profile-page.dart';
 import 'package:my_cash_flow/pages/transaction-page.dart';
 
-class HomePage extends StatefulWidget {
+class BasePage extends StatefulWidget {
   int pageIndex = 0;
-  HomePage({Key? key, required this.pageIndex}) : super(key: key);
+  BasePage({Key? key, required this.pageIndex}) : super(key: key);
 
   @override
-  _HomePageState createState() => _HomePageState();
+  _BasePageState createState() => _BasePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _BasePageState extends State<BasePage> {
 
   int _selectedIndex = 0;
 
@@ -27,7 +25,7 @@ class _HomePageState extends State<HomePage> {
     //print(jsonEncode(widget.accountModel.toJson()));
 
     _widgets = <Widget>[
-      Center(child: Text("This is a home page ")),
+      HomePage(),
       TransactionPage(),
       BudgetPage(),
       ProfilePage()

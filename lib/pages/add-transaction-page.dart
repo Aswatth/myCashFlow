@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:my_cash_flow/models/account-model.dart';
 import 'package:my_cash_flow/models/transaction-model.dart';
 import 'package:my_cash_flow/models/transactionTypeEnum.dart';
-import 'package:my_cash_flow/pages/home-page.dart';
+import 'package:my_cash_flow/pages/base-page.dart';
 
 class AddTransactionPage extends StatefulWidget {
   const AddTransactionPage({Key? key}) : super(key: key);
@@ -29,7 +29,7 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
       Navigator.pop(context); //Popping add transaction page
       Navigator.pop(context); //Popping old transaction page
 
-      Navigator.push(context, MaterialPageRoute(builder: (context) => HomePage(pageIndex: 1),));
+      Navigator.push(context, MaterialPageRoute(builder: (context) => BasePage(pageIndex: 1),));
     });
     /*if(_formKey.currentState!.validate()){
 

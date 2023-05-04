@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:my_cash_flow/models/password-model.dart';
 import 'package:my_cash_flow/pages/account-creation-page.dart';
-import 'package:my_cash_flow/pages/home-page.dart';
+import 'package:my_cash_flow/pages/base-page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -108,7 +108,7 @@ class _LoginState extends State<Login> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => HomePage(pageIndex: 0,),
+                      builder: (context) => BasePage(pageIndex: 0,),
                     ),
                   );
                 }
