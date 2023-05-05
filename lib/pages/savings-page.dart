@@ -68,6 +68,8 @@ class _SavingsPageState extends State<SavingsPage> {
             delete(savingsModel.id!);
           },
           child: Card(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20.0)),
             child: Padding(
               padding: const EdgeInsets.all(10.0),
               child: Column(
