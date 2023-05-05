@@ -1,6 +1,5 @@
 import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:lite_rolling_switch/lite_rolling_switch.dart';
 import 'package:my_cash_flow/models/account-model.dart';
 import 'package:my_cash_flow/models/transaction-model.dart';
 import 'package:my_cash_flow/models/transactionTypeEnum.dart';
@@ -47,6 +46,25 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
     // TODO: implement initState
     super.initState();
   }
+
+  final MaterialStateProperty<Icon?> thumbIcon =
+      MaterialStateProperty.resolveWith<Icon?>(
+    (Set<MaterialState> states) {
+      // Thumb icon when the switch is selected.
+      if (states.contains(MaterialState.selected)) {
+        return const Icon(
+          Icons.arrow_circle_up,
+          color: Colors.green,
+          size: 30,
+        );
+      }
+      return const Icon(
+        Icons.arrow_circle_down,
+        color: Colors.red,
+        size: 30,
+      );
+    },
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -151,35 +169,35 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                 side: BorderSide(width: 1),
                 borderRadius: BorderRadius.circular(20.0)),
             title: Text("Transaction type"),
-            trailing: LiteRollingSwitch(
-              value: _selectedTransactionType == TransactionType.CREDIT,
-              textOn: "Credit",
-              textOff: "Debit",
-              colorOn: Colors.greenAccent,
-              colorOff: Colors.redAccent,
-              iconOn: Icons.arrow_circle_up,
-              iconOff: Icons.arrow_circle_down,
-              onChanged: (bool value) {
-                setState(() {
-                  _selectedTransactionType =
-                      value ? TransactionType.CREDIT : TransactionType.DEBIT;
-                });
-              },
-              onSwipe: () {},
-              onTap: () {},
-              onDoubleTap: () {},
+            trailing: Transform.scale(
+              scale: 1.5,
+              child: Switch(
+                  thumbIcon: thumbIcon,
+                  value: _selectedTransactionType == TransactionType.CREDIT,
+                  activeColor: Colors.white,
+                  activeTrackColor: Colors.greenAccent,
+                  inactiveThumbColor: Colors.white,
+                  inactiveTrackColor: Colors.redAccent,
+                  onChanged: (bool value) {
+                    setState(() {
+                      _selectedTransactionType =
+                          value ? TransactionType.CREDIT : TransactionType.DEBIT;
+                    });
+                  }),
             ),
           ),
           Container(
             decoration: BoxDecoration(
-              color: const Color(0xFF1C2536),
-              borderRadius: BorderRadius.circular(20.0)
-            ),
+                color: const Color(0xFF1C2536),
+                borderRadius: BorderRadius.circular(20.0)),
             child: TextButton(
               onPressed: () {
                 saveTransaction();
               },
-              child: Text("Save", style: TextStyle(color: Colors.white),),
+              child: Text(
+                "Save",
+                style: TextStyle(color: Colors.white),
+              ),
             ),
           )
         ]
