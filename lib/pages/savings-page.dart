@@ -99,12 +99,12 @@ class _SavingsPageState extends State<SavingsPage> {
                   LinearProgressIndicator(
                     value: normalizeValue(
                         getCurrentAmount(savingsModel.percentage),
-                        currentBalance),
+                        savingsModel.targetAmount),
                     backgroundColor: Colors.grey[300],
                     valueColor: AlwaysStoppedAnimation<Color>(getValueColor(
                         normalizeValue(
                             getCurrentAmount(savingsModel.percentage),
-                            currentBalance))),
+                            savingsModel.targetAmount))),
                   )
                 ]
                     .map((e) => Padding(
