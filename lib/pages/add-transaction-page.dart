@@ -19,10 +19,26 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
+  List<String> _categoryNameList = [];
+  List<IconData> _categoryIconList = [];
+
+  List<bool> _isSelectedList = [];
+
   saveTransaction() async {
     int selectedAccountId =
         await AccountDbHelper.instance.getSelectedAccountId();
+
     transactionModel.transactionType = _selectedTransactionType;
+
+    List<String> tagList = [];
+
+    for (int i = 0; i < _isSelectedList.length; ++i) {
+      if (_isSelectedList[i]) {
+        tagList.add(_categoryNameList[i]);
+      }
+    }
+
+    transactionModel.tags = tagList;
     transactionModel.accountId = selectedAccountId;
 
     //print(transactionModel.toJson());
@@ -41,10 +57,45 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
     }*/
   }
 
+  Widget TagWidget(String label, IconData iconData) {
+    return Column(
+      children: [Icon(iconData), Text(label)],
+    );
+  }
+
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
+
+    _categoryNameList = [
+      "Family",
+      "Friends",
+      "Medical",
+      "Entertainment",
+      "Food",
+      "Clothing",
+      "Education",
+      "Travel",
+      "Bills",
+      "Housing",
+      "Other"
+    ];
+
+    _categoryIconList = [
+      Icons.family_restroom,
+      Icons.group,
+      Icons.healing,
+      Icons.theater_comedy,
+      Icons.fastfood,
+      Icons.checkroom,
+      Icons.school,
+      Icons.airplanemode_active,
+      Icons.receipt_long,
+      Icons.house,
+      Icons.shuffle
+    ];
+
+    _isSelectedList = List.generate(_categoryNameList.length, (index) => false);
   }
 
   final MaterialStateProperty<Icon?> thumbIcon =
@@ -77,6 +128,7 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
         children: [
           DateTimePicker(
             decoration: const InputDecoration(
+              hintText: "Transaction date",
               prefixIcon: Icon(Icons.calendar_today),
               enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.all(Radius.circular(20.0)),
@@ -103,7 +155,6 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
             onChanged: (String? _) {
               setState(() {
                 transactionModel.transactionDate = DateTime.parse(_!);
-                print(transactionModel.transactionDate);
               });
             },
           ),
@@ -165,6 +216,43 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
             },
           ),
           ListTile(
+              shape: RoundedRectangleBorder(
+                  side: BorderSide(width: 1),
+                  borderRadius: BorderRadius.circular(20.0)),
+              title: Text("Select category:\n"),
+              subtitle: GridView.count(
+                physics: NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                childAspectRatio: 1.5,
+                crossAxisCount: 3,
+                children: _categoryNameList.map((e) {
+                  int index = _categoryNameList.indexOf(e);
+                  return GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        _isSelectedList[index] = !_isSelectedList[index];
+                      });
+                    },
+                    child: Column(
+                      children: [
+                        CircleAvatar(
+                          child: Icon(
+                            _categoryIconList[index],
+                            color:_isSelectedList[index]
+                                ?Colors.white
+                                :Colors.black,
+                          ),
+                          backgroundColor: _isSelectedList[index]
+                              ?const Color(0xFF1C2536)
+                              :Colors.grey[300],
+                        ),
+                        Text(e),
+                      ],
+                    )
+                  );
+                }).toList(),
+              )),
+          ListTile(
             shape: RoundedRectangleBorder(
                 side: BorderSide(width: 1),
                 borderRadius: BorderRadius.circular(20.0)),
@@ -180,8 +268,9 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                   inactiveTrackColor: Colors.redAccent,
                   onChanged: (bool value) {
                     setState(() {
-                      _selectedTransactionType =
-                          value ? TransactionType.CREDIT : TransactionType.DEBIT;
+                      _selectedTransactionType = value
+                          ? TransactionType.CREDIT
+                          : TransactionType.DEBIT;
                     });
                   }),
             ),

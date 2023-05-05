@@ -21,11 +21,12 @@ class _TransactionPageState extends State<TransactionPage> {
   NumberFormat formatter = NumberFormat("#,###,###");
 
   getTransactions() async {
-    AccountModel? selectedAccount = await AccountDbHelper.instance.getSelectedAccount();
+    AccountModel? selectedAccount =
+        await AccountDbHelper.instance.getSelectedAccount();
 
-    if(selectedAccount != null){
+    if (selectedAccount != null) {
       transactionList =
-      await TransactionDbHelper.instance.getAll(selectedAccount.id!);
+          await TransactionDbHelper.instance.getAll(selectedAccount.id!);
 
       setState(() {
         currency = selectedAccount.currency;
@@ -68,19 +69,48 @@ class _TransactionPageState extends State<TransactionPage> {
         itemBuilder: (context, index) {
           TransactionModel transactionModel = transactionList[index];
           return Card(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20.0)
-            ),
-            child: ListTile(
-              leading: transactionModel.transactionType == TransactionType.CREDIT? Icon(Icons.arrow_circle_up, color: Colors.green,) :Icon(Icons.arrow_circle_down, color: Colors.red,),
-              title: Text(transactionModel.comments),
-              subtitle: Text(DateFormat("dd-MMM-yyyy").format(transactionModel.transactionDate!).toString()),
-              trailing: Text("$currency ${formatter.format(transactionModel.amount!)}"),
-              onLongPress: (){
-                deleteTransaction(transactionModel.id!);
-              },
-            ),
-          );
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20.0)),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ListTile(
+                    leading: Transform.scale(
+                      scale: 1.5,
+                      child: transactionModel.transactionType ==
+                              TransactionType.CREDIT
+                          ? Icon(
+                              Icons.arrow_circle_up,
+                              color: Colors.green,
+                            )
+                          : Icon(
+                              Icons.arrow_circle_down,
+                              color: Colors.red,
+                            ),
+                    ),
+                    title: Text(transactionModel.comments),
+                    subtitle: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                            "${DateFormat("dd-MMM-yyyy").format(transactionModel.transactionDate!).toString()}",style: TextStyle(fontWeight: FontWeight.w900),),
+                        Text(transactionModel.tags.isNotEmpty
+                            ? transactionModel.tags.join(', '):"",style: TextStyle(fontStyle: FontStyle.italic),),
+                      ],
+                    ),
+                    trailing: Chip(label: Text("$currency ${formatter.format(transactionModel.amount!)}",style: TextStyle(color: Colors.white),),backgroundColor: const Color(0xFF1C2536),),
+                    onLongPress: () {
+                      deleteTransaction(transactionModel.id!);
+                    },
+                  ),
+                ]
+                    .map((e) => Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: e,
+                        ))
+                    .toList(),
+              ));
         },
       ),
     );
