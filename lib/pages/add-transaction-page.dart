@@ -5,6 +5,8 @@ import 'package:my_cash_flow/models/transaction-model.dart';
 import 'package:my_cash_flow/models/transactionTypeEnum.dart';
 import 'package:my_cash_flow/pages/base-page.dart';
 
+import '../models/transaction-category.dart';
+
 class AddTransactionPage extends StatefulWidget {
   const AddTransactionPage({Key? key}) : super(key: key);
 
@@ -19,9 +21,6 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  List<String> _categoryNameList = [];
-  List<IconData> _categoryIconList = [];
-
   List<bool> _isSelectedList = [];
 
   int _selectedIndex = -1;
@@ -33,8 +32,8 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
     transactionModel.transactionType = _selectedTransactionType;
 
     transactionModel.category = _selectedIndex != -1
-        ? _categoryNameList[_selectedIndex]
-        : _categoryNameList[_categoryNameList.length - 1];
+        ? categoryNameList[_selectedIndex]
+        : categoryNameList[categoryNameList.length - 1];
     transactionModel.accountId = selectedAccountId;
 
     //print(transactionModel.toJson());
@@ -63,37 +62,7 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
   void initState() {
     super.initState();
 
-    _categoryNameList = [
-      "Family",
-      "Friends",
-      "Medical",
-      "Food",
-      "Clothing",
-      "Education",
-      "Entertainment",
-      "Travel",
-      "Bills",
-      "Housing",
-      "Salary",
-      "Other"
-    ];
-
-    _categoryIconList = [
-      Icons.family_restroom,
-      Icons.group,
-      Icons.healing,
-      Icons.fastfood,
-      Icons.checkroom,
-      Icons.school,
-      Icons.theater_comedy,
-      Icons.airplanemode_active,
-      Icons.receipt_long,
-      Icons.house,
-      Icons.attach_money,
-      Icons.shuffle
-    ];
-
-    _isSelectedList = List.generate(_categoryNameList.length, (index) => false);
+    _isSelectedList = List.generate(categoryNameList.length, (index) => false);
   }
 
   final MaterialStateProperty<Icon?> thumbIcon =
@@ -233,8 +202,8 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
               shrinkWrap: true,
               childAspectRatio: 1.5,
               crossAxisCount: 3,
-              children: _categoryNameList.map((e) {
-                int index = _categoryNameList.indexOf(e);
+              children: categoryNameList.map((e) {
+                int index = categoryNameList.indexOf(e);
                 return GestureDetector(
                     onTap: () {
                       setState(() {
@@ -255,7 +224,7 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                       children: [
                         CircleAvatar(
                           child: Icon(
-                            _categoryIconList[index],
+                            categoryIconList[index],
                             color: _isSelectedList[index]
                                 ? Colors.white
                                 : Colors.black,
