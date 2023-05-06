@@ -17,7 +17,6 @@ class _ExpenseChartState extends State<ExpenseChart> {
   
   initChart() async {
     int selectedAccountId = await AccountDbHelper.instance.getSelectedAccountId();
-    List<TransactionModel> _transactions = await TransactionDbHelper.instance.getDebitTransactions(selectedAccountId);
 
     List<Map<String,dynamic>> categorizedAmounts = await TransactionDbHelper.instance.getCategorizedTransactions(selectedAccountId);
 
@@ -31,8 +30,11 @@ class _ExpenseChartState extends State<ExpenseChart> {
         _pieChartData.add(PieChartSectionData(
             radius: 100,
             color: categoryList.where((w) => w.name == element['category']).first.color,
+            badgeWidget: Icon(categoryList.where((w) => w.name == element['category']).first.icon,color: Colors.white,),
+            badgePositionPercentageOffset: 0.7,
+            titleStyle: TextStyle(color: Colors.white),
             value: (element['AMOUNT']/ expenseSum) * 100,
-            title: "${element['category']}"
+            title: "${element['category']} ${((element['AMOUNT']/ expenseSum) * 100).toStringAsFixed(0)}%"
         ));
       }
     });

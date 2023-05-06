@@ -81,7 +81,9 @@ class _HomePageState extends State<HomePage> {
                             color: Colors.greenAccent,
                           ),
                           Text(
-                              "${account.currency} ${formatter.format(creditedAmount)}", style: TextStyle(color: Colors.white),),
+                            "${account.currency} ${formatter.format(creditedAmount)}",
+                            style: TextStyle(color: Colors.white),
+                          ),
                         ],
                       ),
                       Row(
@@ -91,7 +93,9 @@ class _HomePageState extends State<HomePage> {
                             color: Colors.redAccent,
                           ),
                           Text(
-                              "${account.currency} ${formatter.format(debitedAmount)}", style: TextStyle(color: Colors.white),),
+                            "${account.currency} ${formatter.format(debitedAmount)}",
+                            style: TextStyle(color: Colors.white),
+                          ),
                         ],
                       ),
                     ],
@@ -105,11 +109,15 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           ),
-          const Expanded(
+          Expanded(
             flex: 2,
             child: Card(
               color: Color(0xFF1C2536),
-              child: Center(child: ExpenseChart()),
+              child: Center(
+                child: Stack(
+                    alignment: Alignment.center,
+                    children: [Text("Expenses",style: TextStyle(color: Colors.white),), ExpenseChart()]),
+              ),
             ),
           )
         ], //.map((e) => Padding(padding: const EdgeInsets.all(10.0),child: e,)).toList(),
