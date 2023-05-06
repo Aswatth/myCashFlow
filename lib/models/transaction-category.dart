@@ -1,31 +1,22 @@
 import 'package:flutter/material.dart';
 
-final List<String> categoryNameList = [
-  "Family",
-  "Friends",
-  "Medical",
-  "Food",
-  "Clothing",
-  "Education",
-  "Entertainment",
-  "Travel",
-  "Bills",
-  "Housing",
-  "Salary",
-  "Other"
-];
+class Category{
+  String name;
+  IconData icon;
+  Color color;
 
-final List<IconData> categoryIconList = [
-  Icons.family_restroom,
-  Icons.group,
-  Icons.healing,
-  Icons.fastfood,
-  Icons.checkroom,
-  Icons.school,
-  Icons.theater_comedy,
-  Icons.airplanemode_active,
-  Icons.receipt_long,
-  Icons.house,
-  Icons.attach_money,
-  Icons.shuffle
+  Category(this.name, this.icon, this.color);
+}
+
+final List<Category> categoryList = [
+  Category("Family", Icons.family_restroom, Colors.lightGreenAccent),
+  Category("Friends", Icons.group, Colors.orangeAccent),
+  Category("Medical", Icons.healing, Colors.yellowAccent),
+  Category("Food", Icons.fastfood, Colors.purpleAccent),
+  Category("Clothing", Icons.checkroom, Colors.indigoAccent),
+  Category("Education", Icons.school, Colors.cyanAccent),
+  Category("Entertainment", Icons.theater_comedy, Colors.redAccent),
+  Category("Travel", Icons.airplanemode_active, Colors.pinkAccent),
+  Category("Salary", Icons.attach_money, Colors.lime),
+  Category("Other", Icons.shuffle, Colors.green),
 ];

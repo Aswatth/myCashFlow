@@ -32,8 +32,8 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
     transactionModel.transactionType = _selectedTransactionType;
 
     transactionModel.category = _selectedIndex != -1
-        ? categoryNameList[_selectedIndex]
-        : categoryNameList[categoryNameList.length - 1];
+        ? categoryList[_selectedIndex].name
+        : categoryList[categoryList.length - 1].name;
     transactionModel.accountId = selectedAccountId;
 
     //print(transactionModel.toJson());
@@ -62,7 +62,7 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
   void initState() {
     super.initState();
 
-    _isSelectedList = List.generate(categoryNameList.length, (index) => false);
+    _isSelectedList = List.generate(categoryList.length, (index) => false);
   }
 
   final MaterialStateProperty<Icon?> thumbIcon =
@@ -202,8 +202,8 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
               shrinkWrap: true,
               childAspectRatio: 1.5,
               crossAxisCount: 3,
-              children: categoryNameList.map((e) {
-                int index = categoryNameList.indexOf(e);
+              children: categoryList.map((e) {
+                int index = categoryList.indexOf(e);
                 return GestureDetector(
                     onTap: () {
                       setState(() {
@@ -224,7 +224,7 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                       children: [
                         CircleAvatar(
                           child: Icon(
-                            categoryIconList[index],
+                            categoryList[index].icon,
                             color: _isSelectedList[index]
                                 ? Colors.white
                                 : Colors.black,
@@ -233,7 +233,7 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                               ? const Color(0xFF1C2536)
                               : Colors.grey[300],
                         ),
-                        Text(e),
+                        Text(e.name),
                       ],
                     ));
               }).toList(),

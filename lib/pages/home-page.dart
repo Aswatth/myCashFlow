@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:my_cash_flow/models/account-model.dart';
 import 'package:my_cash_flow/models/transaction-model.dart';
 import 'package:my_cash_flow/models/transactionTypeEnum.dart';
+import 'package:my_cash_flow/pages/expense-chart.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -108,7 +109,7 @@ class _HomePageState extends State<HomePage> {
             flex: 2,
             child: Card(
               color: Color(0xFF1C2536),
-              child: Center(child: Text("Graph here")),
+              child: Center(child: ExpenseChart()),
             ),
           )
         ], //.map((e) => Padding(padding: const EdgeInsets.all(10.0),child: e,)).toList(),
