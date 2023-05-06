@@ -13,7 +13,7 @@ class TransactionDbHelper{
   final String _transactionDate = "transactionDate";
   final String _amount = "amount";
   final String _comments = "comments";
-  final String _tags = "tags";
+  final String _categories = "categories";
   final String _transactionType = "transactionType";
   final String _accountId = "accountId";
 
@@ -31,7 +31,7 @@ class TransactionDbHelper{
     $_transactionDate TEXT,
     $_amount REAL,
     $_comments TEXT,
-    $_tags TEXT,
+    $_categories TEXT,
     $_transactionType INTEGER,
     $_accountId INTEGER,
     FOREIGN KEY($_accountId) REFERENCES ${AccountDbHelper.instance.tableName}(${AccountDbHelper.instance.id}) ON UPDATE CASCADE ON DELETE NO ACTION
@@ -63,7 +63,7 @@ class TransactionModel{
   int? id;
   DateTime? transactionDate;
   double? amount;
-  List<String> tags = [];
+  List<String> categories = [];
   String comments = "";
   TransactionType? transactionType;
   int? accountId;
@@ -84,7 +84,7 @@ class TransactionModel{
     transactionDate = DateFormat('dd-MMM-yyy').parse(json['transactionDate']);
     amount = json['amount'];
     comments = json['comments'];
-    tags = getTagsFromJson(json['tags']);
+    categories = getTagsFromJson(json['categories']);
     transactionType = json['transactionType'] == 1?TransactionType.CREDIT:TransactionType.DEBIT;
     accountId = json['accountId'];
   }
@@ -94,7 +94,7 @@ class TransactionModel{
     'transactionDate': DateFormat('dd-MMM-yyyy').format(transactionDate!).toString(),
     'amount': amount,
     'comments': comments,
-    'tags': tags.join(","),
+    'categories': categories.join(","),
     'transactionType': transactionType == TransactionType.CREDIT?1:0,
     'accountId': accountId
   };

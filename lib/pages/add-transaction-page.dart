@@ -38,7 +38,7 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
       }
     }
 
-    transactionModel.tags = tagList;
+    transactionModel.categories = tagList;
     transactionModel.accountId = selectedAccountId;
 
     //print(transactionModel.toJson());
