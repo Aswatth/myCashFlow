@@ -32,7 +32,9 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
 
     transactionModel.transactionType = _selectedTransactionType;
 
-    transactionModel.category = _selectedIndex != -1?_categoryNameList[_selectedIndex]:"";
+    transactionModel.category = _selectedIndex != -1
+        ? _categoryNameList[_selectedIndex]
+        : _categoryNameList[_categoryNameList.length - 1];
     transactionModel.accountId = selectedAccountId;
 
     //print(transactionModel.toJson());
@@ -72,8 +74,8 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
       "Travel",
       "Bills",
       "Housing",
-      "Other",
-      "Salary"
+      "Salary",
+      "Other"
     ];
 
     _categoryIconList = [
@@ -87,8 +89,8 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
       Icons.airplanemode_active,
       Icons.receipt_long,
       Icons.house,
-      Icons.shuffle,
-      Icons.attach_money
+      Icons.attach_money,
+      Icons.shuffle
     ];
 
     _isSelectedList = List.generate(_categoryNameList.length, (index) => false);
@@ -212,28 +214,39 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
             },
           ),
           ListTile(
-              shape: RoundedRectangleBorder(
-                  side: BorderSide(width: 1),
-                  borderRadius: BorderRadius.circular(20.0)),
-              title: Text("Category:\n"),
-              subtitle: GridView.count(
-                physics: NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
-                childAspectRatio: 1.5,
-                crossAxisCount: 3,
-                children: _categoryNameList.map((e) {
-                  int index = _categoryNameList.indexOf(e);
-                  return GestureDetector(
+            shape: RoundedRectangleBorder(
+                side: BorderSide(width: 1),
+                borderRadius: BorderRadius.circular(20.0)),
+            title: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text("Category:"),
+                Text(
+                  "If none is selected, Other will be selected by default",
+                  style: TextStyle(fontStyle: FontStyle.italic),
+                ),
+                SizedBox(height: 20,)
+              ],
+            ),
+            subtitle: GridView.count(
+              physics: NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              childAspectRatio: 1.5,
+              crossAxisCount: 3,
+              children: _categoryNameList.map((e) {
+                int index = _categoryNameList.indexOf(e);
+                return GestureDetector(
                     onTap: () {
                       setState(() {
                         //Deselect all
-                        _isSelectedList = List.generate(_isSelectedList.length, (index) => false);
+                        _isSelectedList = List.generate(
+                            _isSelectedList.length, (index) => false);
 
                         //Select only one
                         _isSelectedList[index] = !_isSelectedList[index];
 
                         //Save the selected index
-                        if(_isSelectedList[index]){
+                        if (_isSelectedList[index]) {
                           _selectedIndex = index;
                         }
                       });
@@ -243,20 +256,20 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                         CircleAvatar(
                           child: Icon(
                             _categoryIconList[index],
-                            color:_isSelectedList[index]
-                                ?Colors.white
-                                :Colors.black,
+                            color: _isSelectedList[index]
+                                ? Colors.white
+                                : Colors.black,
                           ),
                           backgroundColor: _isSelectedList[index]
-                              ?const Color(0xFF1C2536)
-                              :Colors.grey[300],
+                              ? const Color(0xFF1C2536)
+                              : Colors.grey[300],
                         ),
                         Text(e),
                       ],
-                    )
-                  );
-                }).toList(),
-              ),),
+                    ));
+              }).toList(),
+            ),
+          ),
           ListTile(
             shape: RoundedRectangleBorder(
                 side: BorderSide(width: 1),
