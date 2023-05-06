@@ -239,27 +239,33 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
               }).toList(),
             ),
           ),
-          ListTile(
-            shape: RoundedRectangleBorder(
-                side: BorderSide(width: 1),
+          Container(
+            decoration: BoxDecoration(
+                border: Border.all(color: Colors.black),
                 borderRadius: BorderRadius.circular(20.0)),
-            title: Text("Transaction type"),
-            trailing: Transform.scale(
-              scale: 1.5,
-              child: Switch(
-                  thumbIcon: thumbIcon,
-                  value: _selectedTransactionType == TransactionType.CREDIT,
-                  activeColor: Colors.white,
-                  activeTrackColor: Colors.greenAccent,
-                  inactiveThumbColor: Colors.white,
-                  inactiveTrackColor: Colors.redAccent,
-                  onChanged: (bool value) {
-                    setState(() {
-                      _selectedTransactionType = value
-                          ? TransactionType.CREDIT
-                          : TransactionType.DEBIT;
-                    });
-                  }),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Text("Debit"),
+                Transform.scale(
+                  scale: 1.5,
+                  child: Switch(
+                      thumbIcon: thumbIcon,
+                      value: _selectedTransactionType == TransactionType.CREDIT,
+                      activeColor: Colors.white,
+                      activeTrackColor: Colors.greenAccent,
+                      inactiveThumbColor: Colors.white,
+                      inactiveTrackColor: Colors.redAccent,
+                      onChanged: (bool value) {
+                        setState(() {
+                          _selectedTransactionType = value
+                              ? TransactionType.CREDIT
+                              : TransactionType.DEBIT;
+                        });
+                      }),
+                ),
+                Text("Credit"),
+              ],
             ),
           ),
           Container(
