@@ -24,21 +24,15 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
 
   List<bool> _isSelectedList = [];
 
+  int _selectedIndex = -1;
+
   saveTransaction() async {
     int selectedAccountId =
         await AccountDbHelper.instance.getSelectedAccountId();
 
     transactionModel.transactionType = _selectedTransactionType;
 
-    List<String> tagList = [];
-
-    for (int i = 0; i < _isSelectedList.length; ++i) {
-      if (_isSelectedList[i]) {
-        tagList.add(_categoryNameList[i]);
-      }
-    }
-
-    transactionModel.categories = tagList;
+    transactionModel.category = _selectedIndex != -1?_categoryNameList[_selectedIndex]:"";
     transactionModel.accountId = selectedAccountId;
 
     //print(transactionModel.toJson());
@@ -71,28 +65,30 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
       "Family",
       "Friends",
       "Medical",
-      "Entertainment",
       "Food",
       "Clothing",
       "Education",
+      "Entertainment",
       "Travel",
       "Bills",
       "Housing",
-      "Other"
+      "Other",
+      "Salary"
     ];
 
     _categoryIconList = [
       Icons.family_restroom,
       Icons.group,
       Icons.healing,
-      Icons.theater_comedy,
       Icons.fastfood,
       Icons.checkroom,
       Icons.school,
+      Icons.theater_comedy,
       Icons.airplanemode_active,
       Icons.receipt_long,
       Icons.house,
-      Icons.shuffle
+      Icons.shuffle,
+      Icons.attach_money
     ];
 
     _isSelectedList = List.generate(_categoryNameList.length, (index) => false);
@@ -219,7 +215,7 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
               shape: RoundedRectangleBorder(
                   side: BorderSide(width: 1),
                   borderRadius: BorderRadius.circular(20.0)),
-              title: Text("Select category:\n"),
+              title: Text("Category:\n"),
               subtitle: GridView.count(
                 physics: NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
@@ -230,7 +226,16 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                   return GestureDetector(
                     onTap: () {
                       setState(() {
+                        //Deselect all
+                        _isSelectedList = List.generate(_isSelectedList.length, (index) => false);
+
+                        //Select only one
                         _isSelectedList[index] = !_isSelectedList[index];
+
+                        //Save the selected index
+                        if(_isSelectedList[index]){
+                          _selectedIndex = index;
+                        }
                       });
                     },
                     child: Column(
@@ -251,7 +256,7 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                     )
                   );
                 }).toList(),
-              )),
+              ),),
           ListTile(
             shape: RoundedRectangleBorder(
                 side: BorderSide(width: 1),

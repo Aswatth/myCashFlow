@@ -95,8 +95,7 @@ class _TransactionPageState extends State<TransactionPage> {
                       children: [
                         Text(
                             "${DateFormat("dd-MMM-yyyy").format(transactionModel.transactionDate!).toString()}",style: TextStyle(fontWeight: FontWeight.w900),),
-                        Text(transactionModel.categories.isNotEmpty
-                            ? transactionModel.categories.join(', '):"",style: TextStyle(fontStyle: FontStyle.italic),),
+                        Text(transactionModel.category,style: TextStyle(fontStyle: FontStyle.italic),),
                       ],
                     ),
                     trailing: Chip(label: Text("$currency ${formatter.format(transactionModel.amount!)}",style: TextStyle(color: Colors.white),),backgroundColor: const Color(0xFF1C2536),),
