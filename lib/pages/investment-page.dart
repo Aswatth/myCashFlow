@@ -14,12 +14,17 @@ class _InvestmentPageState extends State<InvestmentPage> {
 
   List<InvestmentModel> investmentModelList = [];
 
-  getAll() async {
-    int accountId = await AccountDbHelper.instance.getSelectedAccountId();
-    investmentModelList = await InvestmentDbHelper.instance.getAll(accountId);
-    setState(() {
+  String currency = "";
 
-    });
+  getAll() async {
+    AccountModel? account = await AccountDbHelper.instance.getSelectedAccount();
+
+    if(account != null){
+      investmentModelList = await InvestmentDbHelper.instance.getAll(account.id!);
+      setState(() {
+        currency = account.currency;
+      });
+    }
   }
 
   delete(int investmentId) async{
@@ -39,12 +44,16 @@ class _InvestmentPageState extends State<InvestmentPage> {
       itemCount: investmentModelList.length,
       itemBuilder: (context, index){
         InvestmentModel investmentModel = investmentModelList[index];
-        return ListTile(
-          title: Text(investmentModel.investmentName),
-          subtitle: Text("\$ ${investmentModel.amountInvested}"),
-          onLongPress: (){
-            delete(investmentModel.id!);
-          },
+        return Card(
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20.0)),
+          child: ListTile(
+            title: Text(investmentModel.investmentName, style: TextStyle(fontWeight: FontWeight.bold),),
+            trailing: Chip(label: Text("${currency} ${investmentModel.amountInvested}", style: TextStyle(color: Colors.white),),backgroundColor: const Color(0xFF1C2536),),
+            onLongPress: (){
+              delete(investmentModel.id!);
+            },
+          ),
         );
       },
     );

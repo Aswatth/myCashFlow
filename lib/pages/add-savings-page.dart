@@ -43,11 +43,28 @@ class _AddSavingsPageState extends State<AddSavingsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(),
-        body: Column(
+        appBar: AppBar(
+          title: Text("Add saving"),
+        ),
+        body: ListView(
           children: [
             TextField(
-              decoration: InputDecoration(hintText: "Enter saving name"),
+              decoration: const InputDecoration(
+                hintText: "Saving name",
+                prefixIcon: Icon(Icons.savings),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                  borderSide: BorderSide(
+                    color: Color(0xFF1C2536),
+                  ),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                  borderSide: BorderSide(
+                    color: Color(0xFF1C2536),
+                  ),
+                ),
+              ),
               onChanged: (String? value) {
                 setState(() {
                   savingsModel.savingName = value!;
@@ -56,7 +73,22 @@ class _AddSavingsPageState extends State<AddSavingsPage> {
             ),
             TextField(
               keyboardType: TextInputType.number,
-              decoration: InputDecoration(hintText: "Enter target amount"),
+              decoration: const InputDecoration(
+                hintText: "Target amount",
+                prefixIcon: Icon(Icons.attach_money),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                  borderSide: BorderSide(
+                    color: Color(0xFF1C2536),
+                  ),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                  borderSide: BorderSide(
+                    color: Color(0xFF1C2536),
+                  ),
+                ),
+              ),
               onChanged: (String value) {
                 setState(() {
                   savingsModel.targetAmount = double.parse(value);
@@ -64,21 +96,37 @@ class _AddSavingsPageState extends State<AddSavingsPage> {
               },
             ),
             ListTile(
-              leading: Text("${savingsModel.percentage}%"),
-              title: Slider(
-                value: _percentageToSave, onChanged: (double value) {
+              shape: RoundedRectangleBorder(
+                  side: BorderSide(width: 1),
+                  borderRadius: BorderRadius.circular(20.0)),
+              //leading: Icon(Icons.percent),
+              title: Text("% to save of current balance"),
+              subtitle: Slider(
+                activeColor: const Color(0xFF1C2536),
+                value: _percentageToSave,
+                onChanged: (double value) {
                 setState(() {
                   _percentageToSave = value;
-                  savingsModel.percentage = (value*100).toInt();
+                  savingsModel.percentage = (_percentageToSave*100).toInt();
                 });
               },),
+              trailing: Text("${savingsModel.percentage}%"),
             ),
-            TextButton(
+            Container(
+              decoration: BoxDecoration(
+                  color: const Color(0xFF1C2536),
+                  borderRadius: BorderRadius.circular(20.0)),
+              child: TextButton(
                 onPressed: () {
                   save();
                 },
-                child: Text("Save"))
-          ],
-        ));
+                child: Text(
+                  "Save",
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+            )
+          ].map((e) => Padding(padding: const EdgeInsets.all(20.0),child: e,)).toList(),
+        ),);
   }
 }

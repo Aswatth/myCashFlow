@@ -90,11 +90,11 @@ class _SavingsPageState extends State<SavingsPage> {
                     children: [
                       Text(
                         "${currency} ${getCurrentAmount(savingsModel.percentage).toStringAsFixed(2)}",
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                        style: TextStyle(fontStyle: FontStyle.italic, fontWeight: FontWeight.bold),
                       ),
                       Text(
                         "Target: ${currency} ${savingsModel.targetAmount.toStringAsFixed(2)}",
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                        style: TextStyle(fontStyle: FontStyle.italic, fontWeight: FontWeight.bold),
                       )
                     ],
                   ),

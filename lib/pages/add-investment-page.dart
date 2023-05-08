@@ -45,10 +45,25 @@ class _AddInvestmentPageState extends State<AddInvestmentPage> {
       appBar: AppBar(
         title: Text("Add investment"),
       ),
-      body: Column(
+      body: ListView(
         children: [
           TextField(
-            decoration: InputDecoration(hintText: "Investment name"),
+            decoration: const InputDecoration(
+              hintText: "Investment name",
+              prefixIcon: Icon(Icons.savings),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                borderSide: BorderSide(
+                  color: Color(0xFF1C2536),
+                ),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                borderSide: BorderSide(
+                  color: Color(0xFF1C2536),
+                ),
+              ),
+            ),
             onChanged: (String value) {
               setState(() {
                 investmentModel.investmentName = value;
@@ -57,7 +72,22 @@ class _AddInvestmentPageState extends State<AddInvestmentPage> {
           ),
           TextField(
             keyboardType: TextInputType.number,
-            decoration: InputDecoration(hintText: "Invested amount"),
+            decoration: const InputDecoration(
+              hintText: "Invested amount",
+              prefixIcon: Icon(Icons.attach_money),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                borderSide: BorderSide(
+                  color: Color(0xFF1C2536),
+                ),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                borderSide: BorderSide(
+                  color: Color(0xFF1C2536),
+                ),
+              ),
+            ),
             onChanged: (String? value) {
               setState(() {
                 investmentModel.amountInvested =
@@ -65,12 +95,21 @@ class _AddInvestmentPageState extends State<AddInvestmentPage> {
               });
             },
           ),
-          TextButton(
+          Container(
+            decoration: BoxDecoration(
+                color: const Color(0xFF1C2536),
+                borderRadius: BorderRadius.circular(20.0)),
+            child: TextButton(
               onPressed: () {
                 save();
               },
-              child: Text("Save"))
-        ],
+              child: Text(
+                "Save",
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+          )
+        ].map((e) => Padding(padding: const EdgeInsets.all(10.0),child: e,)).toList(),
       ),
     );
   }
