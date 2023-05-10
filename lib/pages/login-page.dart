@@ -91,7 +91,22 @@ class _LoginState extends State<Login> {
               obscureText: true,
               autocorrect: false,
               enableSuggestions: false,
-              decoration: const InputDecoration(hintText: "Enter you password"),
+              decoration: const InputDecoration(
+                hintText: "Enter your password",
+                prefixIcon: Icon(Icons.key, color: Color(0xFF1C2536),),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                  borderSide: BorderSide(
+                    color: Color(0xFF1C2536),
+                  ),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                  borderSide: BorderSide(
+                    color: Color(0xFF1C2536),
+                  ),
+                ),
+              ),
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return "Please enter password";
@@ -115,13 +130,19 @@ class _LoginState extends State<Login> {
               },
             ),
           ),
-          TextButton(
-            child: const Text("Log in"),
-            onPressed: () {
-              _formKey.currentState!.save();
-            },
+          Container(
+            width: double.infinity,
+            decoration: BoxDecoration(
+                color: const Color(0xFF1C2536),
+                borderRadius: BorderRadius.circular(20.0)),
+            child: TextButton(
+              child: const Text("Log in", style: TextStyle(color: Colors.white),),
+              onPressed: () {
+                _formKey.currentState!.save();
+              },
+            ),
           )
-        ],
+        ].map((e) => Padding(padding: const EdgeInsets.all(10.0),child: e,)).toList(),
       );
     }
     //If not then set up password for new user
@@ -136,7 +157,22 @@ class _LoginState extends State<Login> {
               autocorrect: false,
               enableSuggestions: false,
               controller: _controller,
-              decoration: const InputDecoration(hintText: "Enter you password"),
+              decoration: const InputDecoration(
+                hintText: "Password",
+                prefixIcon: Icon(Icons.key, color: Color(0xFF1C2536)),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                  borderSide: BorderSide(
+                    color: Color(0xFF1C2536),
+                  ),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                  borderSide: BorderSide(
+                    color: Color(0xFF1C2536),
+                  ),
+                ),
+              ),
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return "Please enter password";
@@ -161,13 +197,19 @@ class _LoginState extends State<Login> {
               },
             ),
           ),
-          TextButton(
-            child: const Text("Setup password"),
-            onPressed: () {
-              _formKey.currentState!.save();
-            },
+          Container(
+            width: double.infinity,
+            decoration: BoxDecoration(
+                color: const Color(0xFF1C2536),
+                borderRadius: BorderRadius.circular(20.0)),
+            child: TextButton(
+              child: const Text("Setup password", style: TextStyle(color: Colors.white),),
+              onPressed: () {
+                _formKey.currentState!.save();
+              },
+            ),
           )
-        ],
+        ].map((e) => Padding(padding: EdgeInsets.all(10.0),child: e,)).toList(),
       );
     }
   }
