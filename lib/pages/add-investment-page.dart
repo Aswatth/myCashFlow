@@ -50,7 +50,7 @@ class _AddInvestmentPageState extends State<AddInvestmentPage> {
           TextField(
             decoration: const InputDecoration(
               hintText: "Investment name",
-              prefixIcon: Icon(Icons.savings),
+              prefixIcon: Icon(Icons.savings, color: const Color(0xFF1C2536),),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.all(Radius.circular(20.0)),
                 borderSide: BorderSide(
@@ -74,7 +74,7 @@ class _AddInvestmentPageState extends State<AddInvestmentPage> {
             keyboardType: TextInputType.number,
             decoration: const InputDecoration(
               hintText: "Invested amount",
-              prefixIcon: Icon(Icons.attach_money),
+              prefixIcon: Icon(Icons.attach_money, color: const Color(0xFF1C2536),),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.all(Radius.circular(20.0)),
                 borderSide: BorderSide(

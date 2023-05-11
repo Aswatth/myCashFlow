@@ -96,7 +96,7 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
           DateTimePicker(
             decoration: const InputDecoration(
               hintText: "Transaction date",
-              prefixIcon: Icon(Icons.calendar_today),
+              prefixIcon: Icon(Icons.calendar_today, color: const Color(0xFF1C2536),),
               enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.all(Radius.circular(20.0)),
                   borderSide: BorderSide(
@@ -130,7 +130,7 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
             keyboardType: TextInputType.number,
             decoration: const InputDecoration(
               hintText: "Transaction amount",
-              prefixIcon: Icon(Icons.currency_exchange),
+              prefixIcon: Icon(Icons.currency_exchange, color: const Color(0xFF1C2536),),
               enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.all(Radius.circular(20.0)),
                   borderSide: BorderSide(
@@ -158,7 +158,7 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
             maxLength: 25,
             decoration: const InputDecoration(
               hintText: "Transaction name",
-              prefixIcon: Icon(Icons.text_snippet),
+              prefixIcon: Icon(Icons.text_snippet, color: const Color(0xFF1C2536),),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.all(Radius.circular(20.0)),
                 borderSide: BorderSide(

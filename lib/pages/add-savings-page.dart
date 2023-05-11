@@ -51,7 +51,7 @@ class _AddSavingsPageState extends State<AddSavingsPage> {
             TextField(
               decoration: const InputDecoration(
                 hintText: "Saving name",
-                prefixIcon: Icon(Icons.savings),
+                prefixIcon: Icon(Icons.savings,color: const Color(0xFF1C2536),),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.all(Radius.circular(20.0)),
                   borderSide: BorderSide(
@@ -75,7 +75,7 @@ class _AddSavingsPageState extends State<AddSavingsPage> {
               keyboardType: TextInputType.number,
               decoration: const InputDecoration(
                 hintText: "Target amount",
-                prefixIcon: Icon(Icons.attach_money),
+                prefixIcon: Icon(Icons.attach_money, color: const Color(0xFF1C2536),),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.all(Radius.circular(20.0)),
                   borderSide: BorderSide(
