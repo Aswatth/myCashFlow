@@ -65,6 +65,7 @@ class _AccountPageState extends State<AccountPage> {
         },
       ),
       floatingActionButton: FloatingActionButton(
+        backgroundColor: const Color(0xFF1C2536),
         onPressed: () {
           Navigator.push(
               context,

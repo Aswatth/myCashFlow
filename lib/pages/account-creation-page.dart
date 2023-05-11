@@ -14,13 +14,13 @@ class AccountCreationPage extends StatefulWidget {
 }
 
 class _AccountCreationPageState extends State<AccountCreationPage> {
-  List<String> currencyList = ["INR", "USD"];
 
   AccountModel accountModel = AccountModel();
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   TextEditingController accountNameController = TextEditingController();
   TextEditingController currentBalanceController = TextEditingController();
+  TextEditingController currencyController = TextEditingController();
 
   saveAccount() {
     if (_formKey.currentState!.validate()) {
@@ -52,12 +52,26 @@ class _AccountCreationPageState extends State<AccountCreationPage> {
           child: Form(
             key: _formKey,
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+              //mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 TextFormField(
                   controller: accountNameController,
                   decoration: const InputDecoration(
-                      hintText: "Enter account name"),
+                    hintText: "Enter account name",
+                    prefixIcon: Icon(Icons.account_balance, color: Color(0xFF1C2536),),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                      borderSide: BorderSide(
+                        color: Color(0xFF1C2536),
+                      ),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                      borderSide: BorderSide(
+                        color: Color(0xFF1C2536),
+                      ),
+                    ),
+                  ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return "Account name cannot be empty";
@@ -73,8 +87,22 @@ class _AccountCreationPageState extends State<AccountCreationPage> {
                 TextFormField(
                   controller: currentBalanceController,
                   keyboardType: TextInputType.number,
-                  decoration:
-                  const InputDecoration(hintText: "Enter current balance"),
+                  decoration: const InputDecoration(
+                    hintText: "Enter current balance",
+                    prefixIcon: Icon(Icons.attach_money,color: Color(0xFF1C2536),),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                      borderSide: BorderSide(
+                        color: Color(0xFF1C2536),
+                      ),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                      borderSide: BorderSide(
+                        color: Color(0xFF1C2536),
+                      ),
+                    ),
+                  ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return "Current balance cannot be empty";
@@ -87,26 +115,53 @@ class _AccountCreationPageState extends State<AccountCreationPage> {
                     });
                   },
                 ),
-                DropdownButton(
-                    value: accountModel.currency,
-                    items:
-                    currencyList.map<DropdownMenuItem<String>>((String value) {
-                      return DropdownMenuItem(
-                        child: Text(value),
-                        value: value,
-                      );
-                    }).toList(),
-                    onChanged: (String? value) {
-                      setState(() {
-                        accountModel.currency = value!;
-                      });
-                    }),
-                TextButton(
+                TextFormField(
+                  controller: currencyController,
+                  keyboardType: TextInputType.number,
+                  decoration: const InputDecoration(
+                    hintText: "Enter currency to use",
+                    prefixIcon: Icon(Icons.currency_exchange,color: Color(0xFF1C2536),),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                      borderSide: BorderSide(
+                        color: Color(0xFF1C2536),
+                      ),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                      borderSide: BorderSide(
+                        color: Color(0xFF1C2536),
+                      ),
+                    ),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return "Currency cannot be empty";
+                    }
+                    return null;
+                  },
+                  onSaved: (value) {
+                    setState(() {
+                      accountModel.currency = value!.toUpperCase();
+                    });
+                  },
+                ),
+                Container(
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                      color: const Color(0xFF1C2536),
+                      borderRadius: BorderRadius.circular(20.0)),
+                  child: TextButton(
                     onPressed: () {
                       saveAccount();
                     },
-                    child: Text("Save"))
-              ],
+                    child: Text(
+                      "Save",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                )
+              ].map((e) => Padding(padding: const EdgeInsets.all(10.0),child: e,)).toList(),
             ),
           )),
     );
