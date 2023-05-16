@@ -1,4 +1,5 @@
 
+import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 import 'package:my_cash_flow/models/account-model.dart';
 import 'package:my_cash_flow/models/transactionTypeEnum.dart';
@@ -53,6 +54,66 @@ class TransactionDbHelper{
     return data.map((e) => TransactionModel.fromJson(e)).toList();
   }
 
+  Future<List<TransactionModel>> filterDataOnStartDate(int accountId, String startDate) async {
+    Database db = await DatabaseHelper.instance.database;
+    List<Map<String,dynamic>> data = await db.query(tableName, where: '$_accountId = ? AND ($_transactionDate >= ?)', whereArgs: [accountId, startDate]);
+    return data.map((e) => TransactionModel.fromJson(e)).toList();
+  }
+
+  Future<List<TransactionModel>> filterDataOnEndDate(int accountId, String endDate) async {
+    Database db = await DatabaseHelper.instance.database;
+    List<Map<String,dynamic>> data = await db.query(tableName, where: '$_accountId = ? AND ($_transactionDate <= ?)', whereArgs: [accountId, endDate]);
+    return data.map((e) => TransactionModel.fromJson(e)).toList();
+  }
+
+  Future<List<TransactionModel>> filterDataOnStartAndEndDate(int accountId, String startDate, String endDate) async {
+    Database db = await DatabaseHelper.instance.database;
+    List<Map<String,dynamic>> data = await db.query(tableName, where: '$_accountId = ? AND ($_transactionDate >= ? AND $_transactionDate <= ?)', whereArgs: [accountId, startDate, endDate]);
+    return data.map((e) => TransactionModel.fromJson(e)).toList();
+  }
+
+  Future<List<TransactionModel>> filterDataOnMinAmount(int accountId, double minAmount) async {
+    Database db = await DatabaseHelper.instance.database;
+    List<Map<String,dynamic>> data = await db.query(tableName, where: '$_accountId = ? AND $_amount >= ?', whereArgs: [accountId, minAmount]);
+    return data.map((e) => TransactionModel.fromJson(e)).toList();
+  }
+
+  Future<List<TransactionModel>> filterDataOnMaxAmount(int accountId, double maxAmount) async {
+    Database db = await DatabaseHelper.instance.database;
+    List<Map<String,dynamic>> data = await db.query(tableName, where: '$_accountId = ? AND $_amount <= ?', whereArgs: [accountId, maxAmount]);
+    return data.map((e) => TransactionModel.fromJson(e)).toList();
+  }
+
+  Future<List<TransactionModel>> filterDataOnMinMaxAmount(int accountId, double minAmount, double maxAmount) async {
+    Database db = await DatabaseHelper.instance.database;
+    List<Map<String,dynamic>> data = await db.query(tableName, where: '$_accountId = ? AND ($_amount >= ? AND $_amount <= ?)', whereArgs: [accountId, minAmount, maxAmount]);
+    return data.map((e) => TransactionModel.fromJson(e)).toList();
+  }
+
+  Future<List<TransactionModel>> filterDataOnCategories(int accountId, List<String> categories) async {
+    String categoryListString = categories.join(',');
+
+    Database db = await DatabaseHelper.instance.database;
+    List<Map<String,dynamic>> data = await db.query(tableName, where: '$_accountId = ? AND ($_category IN (?))', whereArgs: [accountId, categoryListString]);
+    return data.map((e) => TransactionModel.fromJson(e)).toList();
+  }
+
+  Future<List<TransactionModel>> filterDataOnTransactionType(int accountId, TransactionType transactionType) async {
+    Database db = await DatabaseHelper.instance.database;
+    List<Map<String,dynamic>> data = await db.query(tableName, where: '$_accountId = ? AND ($_transactionType = ?)', whereArgs: [accountId, transactionType==TransactionType.CREDIT?1:0]);
+    return data.map((e) => TransactionModel.fromJson(e)).toList();
+  }
+
+  Future<List<TransactionModel>> filterData(int accountId, String startDate, String endDate, double minAmount, double maxAmount) async {
+    List<TransactionModel> filteredOnDate = await filterDataOnStartAndEndDate(accountId, startDate, endDate);
+    List<TransactionModel> filteredOnAmount = await filterDataOnMinMaxAmount(accountId, minAmount, maxAmount);
+    List<TransactionModel> finalData = filteredOnDate;
+
+    finalData.removeWhere((element) => !filteredOnAmount.contains(element));
+
+    return finalData;
+  }
+
   Future<List<TransactionModel>> getDebitTransactions(int accountId) async{
     Database db = await DatabaseHelper.instance.database;
     List<Map<String,dynamic>> data = await db.query(tableName, where: '$_accountId = ? AND $_transactionType = ?', whereArgs: [accountId,0]);
@@ -73,6 +134,7 @@ class TransactionDbHelper{
   }
 }
 
+@immutable
 class TransactionModel{
   int? id;
   DateTime? transactionDate;
@@ -86,7 +148,7 @@ class TransactionModel{
 
   TransactionModel.fromJson(Map<String, dynamic> json){
     id = json['id'];
-    transactionDate = DateFormat('dd-MMM-yyy').parse(json['transactionDate']);
+    transactionDate = DateFormat('dd-MMM-yyyy').parse(json['transactionDate']);
     amount = json['amount'];
     comments = json['comments'];
     category = json['category'];
@@ -103,4 +165,27 @@ class TransactionModel{
     'transactionType': transactionType == TransactionType.CREDIT?1:0,
     'accountId': accountId
   };
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is TransactionModel &&
+          runtimeType == other.runtimeType &&
+          id == other.id &&
+          transactionDate == other.transactionDate &&
+          amount == other.amount &&
+          category == other.category &&
+          comments == other.comments &&
+          transactionType == other.transactionType &&
+          accountId == other.accountId;
+
+  @override
+  int get hashCode =>
+      id.hashCode ^
+      transactionDate.hashCode ^
+      amount.hashCode ^
+      category.hashCode ^
+      comments.hashCode ^
+      transactionType.hashCode ^
+      accountId.hashCode;
 }
