@@ -26,7 +26,6 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     checkIfNewUser();
   }
@@ -61,18 +60,14 @@ class _LoginState extends State<Login> {
   final TextEditingController _controller = TextEditingController();
 
   int validationResult = -1;
+  String errorMessage = "";
 
   Future<bool> validatePassword(password) async {
-    bool result = await PasswordDbHelper.instance.validatePassword(password);
-    setState(() {
-      if (result) {
-        validationResult = 1;
-      } else {
-        validationResult = 0;
-      }
-      _formKey.currentState!.validate();
+    return await PasswordDbHelper.instance.validatePassword(password);
+    /*setState(() {
+      validationResult = result?1:0;
     });
-    return result;
+    return result;*/
   }
 
   savePassword(String password) async {
@@ -84,6 +79,7 @@ class _LoginState extends State<Login> {
     if (!widget.isNewUser) {
       return Column(
         mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Form(
             key: _formKey,
@@ -110,26 +106,29 @@ class _LoginState extends State<Login> {
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return "Please enter password";
-                } else {
-                  if (validationResult == 0) {
-                    return "Incorrect password";
-                  } else {
-                    return null;
-                  }
                 }
+                return null;
               },
-              onSaved: (_) {
-                if (_formKey.currentState!.validate()) {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => BasePage(pageIndex: 0,),
-                    ),
-                  );
-                }
+              onSaved: (value) {
+                validatePassword(value).then((value){
+                  if(value){
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => BasePage(pageIndex: 0,),
+                      ),
+                    );
+                  }
+                  else{
+                    setState(() {
+                      errorMessage = "Incorrect password";
+                    });
+                  }
+                });
               },
             ),
           ),
+          errorMessage.isNotEmpty?Text(errorMessage):Container(),
           Container(
             width: double.infinity,
             decoration: BoxDecoration(
@@ -156,7 +155,6 @@ class _LoginState extends State<Login> {
               obscureText: true,
               autocorrect: false,
               enableSuggestions: false,
-              controller: _controller,
               decoration: const InputDecoration(
                 hintText: "Password",
                 prefixIcon: Icon(Icons.key, color: Color(0xFF1C2536)),
@@ -183,7 +181,7 @@ class _LoginState extends State<Login> {
               onSaved: (_) {
                 if (_formKey.currentState!.validate()) {
                   //Saving the password
-                  savePassword(_controller.text);
+                  savePassword(_!);
 
                   //Clearing navigation stack
                   Navigator.pushAndRemoveUntil(
@@ -191,7 +189,7 @@ class _LoginState extends State<Login> {
                       MaterialPageRoute(
                           builder: (context) => AccountCreationPage(
                                 isNewUser: widget.isNewUser,
-                              )),
+                              ),),
                       (route) => false);
                 }
               },
