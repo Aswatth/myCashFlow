@@ -499,11 +499,18 @@ class _TransactionPageState extends State<TransactionPage> {
           actions: [
             IconButton(
                 onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => AddTransactionPage(),
-                      ));
+                  AccountDbHelper.instance.getSelectedAccountId().then((value) {
+                    if(value == 0){
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("No account found!"),));
+                    }
+                    else{
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => AddTransactionPage(),
+                          ));
+                    }
+                  });
                 },
                 icon: const Icon(Icons.add)),
           ],

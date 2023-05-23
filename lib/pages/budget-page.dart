@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_cash_flow/models/account-model.dart';
 import 'package:my_cash_flow/pages/add-investment-page.dart';
 import 'package:my_cash_flow/pages/add-savings-page.dart';
 import 'package:my_cash_flow/pages/investment-page.dart';
@@ -25,12 +26,19 @@ class _BudgetPageState extends State<BudgetPage> {
           title: Text("Budgets"),
           actions: [
             IconButton(onPressed: (){
-              if(_selectedTabIndex == 0){
-                Navigator.push(context, MaterialPageRoute(builder: (context) => AddSavingsPage(),));
-              }
-              else{
-                Navigator.push(context, MaterialPageRoute(builder: (context) => AddInvestmentPage(),));
-              }
+              AccountDbHelper.instance.getSelectedAccountId().then((value) {
+                if(value == 0){
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("No account found!"),));
+                }
+                else{
+                  if(_selectedTabIndex == 0){
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => AddSavingsPage(),));
+                  }
+                  else{
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => AddInvestmentPage(),));
+                  }
+                }
+              });
             }, icon: Icon(Icons.add))
           ],
           bottom: TabBar(
