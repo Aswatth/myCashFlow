@@ -4,7 +4,7 @@ import 'package:my_cash_flow/helpers/transaction-filter-service.dart';
 import 'package:my_cash_flow/models/transaction-model.dart';
 import 'package:my_cash_flow/models/transactionFilter-model.dart';
 import 'package:my_cash_flow/models/transactionTypeEnum.dart';
-import 'package:my_cash_flow/pages/add-transaction-page.dart';
+import 'package:my_cash_flow/pages/add-edit-transaction-page.dart';
 
 import '../models/account-model.dart';
 import '../models/transaction-category.dart';
@@ -456,6 +456,13 @@ class _TransactionPageState extends State<TransactionPage> {
                 ),
                 backgroundColor: const Color(0xFF1C2536),
               ),
+              onTap: (){
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => Add_EditTransactionPage(existingTransactionModel: transactionModel,),
+                    ));
+              },
               onLongPress: () {
                 deleteTransaction(transactionModel.id!);
               },
@@ -507,7 +514,7 @@ class _TransactionPageState extends State<TransactionPage> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => AddTransactionPage(),
+                            builder: (context) => Add_EditTransactionPage(existingTransactionModel: null,),
                           ));
                     }
                   });

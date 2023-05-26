@@ -43,9 +43,14 @@ class TransactionDbHelper{
     await db.execute(createTableQuery);
   }
 
-  Future<void> insert(TransactionModel transactionModel) async {
+  Future<void> save(TransactionModel transactionModel) async {
     Database db = await DatabaseHelper.instance.database;
-    await db.insert(tableName, transactionModel.toJson());
+    if(transactionModel.id != null){
+      await db.update(tableName, transactionModel.toJson(), where: "$_id = ?", whereArgs: [transactionModel.id]);
+    }
+    else{
+      await db.insert(tableName, transactionModel.toJson());
+    }
   }
 
   Future<List<TransactionModel>> getAll(int accountId) async{

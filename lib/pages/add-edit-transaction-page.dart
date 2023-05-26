@@ -7,37 +7,51 @@ import 'package:my_cash_flow/pages/base-page.dart';
 
 import '../models/transaction-category.dart';
 
-class AddTransactionPage extends StatefulWidget {
-  const AddTransactionPage({Key? key}) : super(key: key);
+class Add_EditTransactionPage extends StatefulWidget {
+  TransactionModel? existingTransactionModel;
+
+  Add_EditTransactionPage({Key? key, required this.existingTransactionModel})
+      : super(key: key);
 
   @override
-  _AddTransactionPageState createState() => _AddTransactionPageState();
+  _Add_EditTransactionPageState createState() => _Add_EditTransactionPageState();
 }
 
-class _AddTransactionPageState extends State<AddTransactionPage> {
+class _Add_EditTransactionPageState extends State<Add_EditTransactionPage> {
   TransactionType _selectedTransactionType = TransactionType.CREDIT;
 
   TransactionModel transactionModel = TransactionModel();
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
+  TextEditingController _transactionDateController = TextEditingController();
+  TextEditingController _transactionAmountController = TextEditingController();
+  TextEditingController _transactionCommentsController = TextEditingController();
+
   List<bool> _isSelectedList = [];
 
-  int _selectedIndex = -1;
+  int _prevSelectedIndex = -1;
+  int _currentSelectedIndex = -1;
+
+  String title = "Add transaction";
 
   saveTransaction() async {
     int selectedAccountId =
         await AccountDbHelper.instance.getSelectedAccountId();
 
+    transactionModel.transactionDate = DateTime.parse(_transactionDateController.text);
+    transactionModel.amount = double.parse(_transactionAmountController.text);
+    transactionModel.comments = _transactionCommentsController.text;
+
     transactionModel.transactionType = _selectedTransactionType;
 
-    transactionModel.category = _selectedIndex != -1
-        ? categoryList[_selectedIndex].name
+    transactionModel.category = _currentSelectedIndex != -1
+        ? categoryList[_currentSelectedIndex].name
         : categoryList[categoryList.length - 1].name;
     transactionModel.accountId = selectedAccountId;
 
     //print(transactionModel.toJson());
-    TransactionDbHelper.instance.insert(transactionModel).then((value) {
+    TransactionDbHelper.instance.save(transactionModel).then((value) {
       Navigator.pop(context); //Popping add transaction page
       Navigator.pop(context); //Popping old transaction page
 
@@ -52,7 +66,7 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
     }*/
   }
 
-  Widget TagWidget(String label, IconData iconData) {
+  Widget tagWidget(String label, IconData iconData) {
     return Column(
       children: [Icon(iconData), Text(label)],
     );
@@ -63,6 +77,30 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
     super.initState();
 
     _isSelectedList = List.generate(categoryList.length, (index) => false);
+
+    if (widget.existingTransactionModel != null) {
+      transactionModel = widget.existingTransactionModel!;
+
+      _transactionDateController.text = transactionModel.transactionDate.toString();
+      _transactionAmountController.text = transactionModel.amount.toString();
+      _transactionCommentsController.text = transactionModel.comments;
+
+      _selectedTransactionType = transactionModel.transactionType!;
+
+      for(int i = 0; i < categoryList.length; ++i){
+        if(categoryList[i].name == transactionModel.category){
+          _currentSelectedIndex = i;
+          _prevSelectedIndex = i;
+          _isSelectedList[_currentSelectedIndex] = true;
+          break;
+        }
+      }
+
+      title = "Edit transaction";
+    }
+    else{
+      transactionModel = TransactionModel();
+    }
   }
 
   final MaterialStateProperty<Icon?> thumbIcon =
@@ -88,15 +126,19 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Add transaction"),
+        title: Text(title),
       ),
       body: Form(
           child: ListView(
         children: [
           DateTimePicker(
+            controller: _transactionDateController,
             decoration: const InputDecoration(
               hintText: "Transaction date",
-              prefixIcon: Icon(Icons.calendar_today, color: const Color(0xFF1C2536),),
+              prefixIcon: Icon(
+                Icons.calendar_today,
+                color: const Color(0xFF1C2536),
+              ),
               enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.all(Radius.circular(20.0)),
                   borderSide: BorderSide(
@@ -121,16 +163,20 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
             },
             onChanged: (String? _) {
               setState(() {
-                transactionModel.transactionDate = DateTime.parse(_!);
+                _transactionDateController.text = _!;
               });
             },
           ),
           TextFormField(
             //key: _formKey,
+            controller: _transactionAmountController,
             keyboardType: TextInputType.number,
             decoration: const InputDecoration(
               hintText: "Transaction amount",
-              prefixIcon: Icon(Icons.currency_exchange, color: const Color(0xFF1C2536),),
+              prefixIcon: Icon(
+                Icons.currency_exchange,
+                color: const Color(0xFF1C2536),
+              ),
               enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.all(Radius.circular(20.0)),
                   borderSide: BorderSide(
@@ -149,16 +195,21 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
               return null;
             },
             onChanged: (_) {
-              transactionModel.amount = double.parse(_);
+              _transactionAmountController.text = _;
+              _transactionAmountController.selection = TextSelection.collapsed(offset: _transactionAmountController.text.length);
             },
           ),
           TextFormField(
             //key: _formKey,
+            controller: _transactionCommentsController,
             keyboardType: TextInputType.text,
             maxLength: 25,
             decoration: const InputDecoration(
-              hintText: "Transaction name",
-              prefixIcon: Icon(Icons.text_snippet, color: const Color(0xFF1C2536),),
+              hintText: "Comments",
+              prefixIcon: Icon(
+                Icons.text_snippet,
+                color: const Color(0xFF1C2536),
+              ),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.all(Radius.circular(20.0)),
                 borderSide: BorderSide(
@@ -179,7 +230,8 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
               return null;
             },
             onChanged: (_) {
-              transactionModel.comments = _;
+              _transactionCommentsController.text = _;
+              _transactionCommentsController.selection = TextSelection.collapsed(offset: _transactionCommentsController.text.length);
             },
           ),
           ListTile(
@@ -194,7 +246,9 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                   "If none is selected, Other will be selected by default",
                   style: TextStyle(fontStyle: FontStyle.italic),
                 ),
-                SizedBox(height: 20,)
+                SizedBox(
+                  height: 20,
+                )
               ],
             ),
             subtitle: GridView.count(
@@ -207,16 +261,18 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                 return GestureDetector(
                     onTap: () {
                       setState(() {
-                        //Deselect all
-                        _isSelectedList = List.generate(
-                            _isSelectedList.length, (index) => false);
+
+                        if(_prevSelectedIndex != -1){
+                          _isSelectedList[_prevSelectedIndex] = !_isSelectedList[_prevSelectedIndex];
+                        }
 
                         //Select only one
                         _isSelectedList[index] = !_isSelectedList[index];
 
                         //Save the selected index
                         if (_isSelectedList[index]) {
-                          _selectedIndex = index;
+                          _currentSelectedIndex = index;
+                          _prevSelectedIndex = index;
                         }
                       });
                     },
