@@ -3,26 +3,30 @@ import 'package:my_cash_flow/models/account-model.dart';
 import 'package:my_cash_flow/models/investment-model.dart';
 import 'package:my_cash_flow/pages/base-page.dart';
 
-class AddInvestmentPage extends StatefulWidget {
-  const AddInvestmentPage({Key? key}) : super(key: key);
+class AddEditInvestmentPage extends StatefulWidget {
+
+  InvestmentModel? existingInvestmentModel;
+
+  AddEditInvestmentPage({Key? key, this.existingInvestmentModel}) : super(key: key);
 
   @override
-  _AddInvestmentPageState createState() => _AddInvestmentPageState();
+  _AddEditInvestmentPageState createState() => _AddEditInvestmentPageState();
 }
 
-class _AddInvestmentPageState extends State<AddInvestmentPage> {
+class _AddEditInvestmentPageState extends State<AddEditInvestmentPage> {
   InvestmentModel investmentModel = InvestmentModel();
 
-  Future<void> saveToDb() async {
-    int accountId = await AccountDbHelper.instance.getSelectedAccountId();
+  final TextEditingController _investmentNameController = TextEditingController();
+  final TextEditingController _investmentAmountController = TextEditingController();
 
+  save() async{
+    investmentModel.investmentName = _investmentNameController.text;
+    investmentModel.amountInvested = double.parse(_investmentAmountController.text);
+
+    int accountId = await AccountDbHelper.instance.getSelectedAccountId();
     investmentModel.accountId = accountId;
 
-    InvestmentDbHelper.instance.insert(investmentModel);
-  }
-
-  save() {
-    saveToDb().then((value) {
+    InvestmentDbHelper.instance.save(investmentModel).then((value) {
       Navigator.pop(context);
       Navigator.pop(context);
 
@@ -37,6 +41,13 @@ class _AddInvestmentPageState extends State<AddInvestmentPage> {
   @override
   void initState() {
     super.initState();
+
+    if(widget.existingInvestmentModel != null){
+     investmentModel = widget.existingInvestmentModel!;
+
+     _investmentNameController.text = investmentModel.investmentName;
+     _investmentAmountController.text = investmentModel.amountInvested.toString();
+    }
   }
 
   @override
@@ -48,6 +59,7 @@ class _AddInvestmentPageState extends State<AddInvestmentPage> {
       body: ListView(
         children: [
           TextField(
+            controller: _investmentNameController,
             decoration: const InputDecoration(
               hintText: "Investment name",
               prefixIcon: Icon(Icons.savings, color: const Color(0xFF1C2536),),
@@ -66,12 +78,14 @@ class _AddInvestmentPageState extends State<AddInvestmentPage> {
             ),
             onChanged: (String value) {
               setState(() {
-                investmentModel.investmentName = value;
+                _investmentNameController.text = value;
+                _investmentNameController.selection = TextSelection.collapsed(offset: _investmentNameController.text.length);
               });
             },
           ),
           TextField(
             keyboardType: TextInputType.number,
+            controller: _investmentAmountController,
             decoration: const InputDecoration(
               hintText: "Invested amount",
               prefixIcon: Icon(Icons.attach_money, color: const Color(0xFF1C2536),),
@@ -90,8 +104,8 @@ class _AddInvestmentPageState extends State<AddInvestmentPage> {
             ),
             onChanged: (String? value) {
               setState(() {
-                investmentModel.amountInvested =
-                    value == null ? 0 : double.parse(value);
+                _investmentAmountController.text = value == null? "":value!;
+                _investmentAmountController.selection = TextSelection.collapsed(offset: _investmentAmountController.text.length);
               });
             },
           ),

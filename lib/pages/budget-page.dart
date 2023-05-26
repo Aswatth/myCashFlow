@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_cash_flow/models/account-model.dart';
-import 'package:my_cash_flow/pages/add-investment-page.dart';
+import 'package:my_cash_flow/pages/add-edit-investment-page.dart';
 import 'package:my_cash_flow/pages/add-savings-page.dart';
 import 'package:my_cash_flow/pages/investment-page.dart';
 import 'package:my_cash_flow/pages/savings-page.dart';
@@ -35,7 +35,7 @@ class _BudgetPageState extends State<BudgetPage> {
                     Navigator.push(context, MaterialPageRoute(builder: (context) => AddSavingsPage(),));
                   }
                   else{
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => AddInvestmentPage(),));
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => AddEditInvestmentPage(),));
                   }
                 }
               });
