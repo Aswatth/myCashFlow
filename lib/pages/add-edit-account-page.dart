@@ -5,40 +5,51 @@ import 'package:my_cash_flow/models/account-model.dart';
 import 'package:my_cash_flow/pages/accounts-page.dart';
 import 'package:my_cash_flow/pages/base-page.dart';
 
-class AccountCreationPage extends StatefulWidget {
-  bool isNewUser = false;
-  AccountCreationPage({Key? key,required this.isNewUser}) : super(key: key);
+class AddEditAccountsPage extends StatefulWidget {
+  AccountModel? existingAccountModel;
+  AddEditAccountsPage({Key? key, this.existingAccountModel}) : super(key: key);
 
   @override
-  _AccountCreationPageState createState() => _AccountCreationPageState();
+  _AddEditAccountsPageState createState() => _AddEditAccountsPageState();
 }
 
-class _AccountCreationPageState extends State<AccountCreationPage> {
+class _AddEditAccountsPageState extends State<AddEditAccountsPage> {
 
   AccountModel accountModel = AccountModel();
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  TextEditingController accountNameController = TextEditingController();
-  TextEditingController currentBalanceController = TextEditingController();
-  TextEditingController currencyController = TextEditingController();
+  TextEditingController _accountNameController = TextEditingController();
+  TextEditingController _currentBalanceController = TextEditingController();
+  TextEditingController _currencyController = TextEditingController();
 
   saveAccount() {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
-      AccountDbHelper.instance.insertAccount(accountModel).then((_) {
-        if(widget.isNewUser) {
-          //Clearing navigation stack and navigating to home page
-          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_) => BasePage(pageIndex: 0,)), (route)=>false);
-        }
-        else{
-          //Navigation stack .... -> older Accounts Page -> Account creation page
+      AccountDbHelper.instance.save(accountModel).then((_) {
+        if(widget.existingAccountModel != null){
           Navigator.pop(context); //Popping account creation page from stack
           Navigator.pop(context); //Popping older accounts page from stack
 
           //Navigation stack ..... -> newer Accounts Page
           Navigator.push(context, MaterialPageRoute(builder: (_) => AccountPage()));
         }
+        else{
+          //Clearing navigation stack and navigating to home page
+          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_) => BasePage(pageIndex: 0,)), (route)=>false);
+        }
       });
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    if(widget.existingAccountModel != null){
+      accountModel = widget.existingAccountModel!;
+      _accountNameController.text = accountModel.accountName;
+      _currentBalanceController.text = accountModel.currentBalance.toString();
+      _currencyController.text = accountModel.currency;
     }
   }
 
@@ -55,7 +66,7 @@ class _AccountCreationPageState extends State<AccountCreationPage> {
               //mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 TextFormField(
-                  controller: accountNameController,
+                  controller: _accountNameController,
                   decoration: const InputDecoration(
                     hintText: "Enter account name",
                     prefixIcon: Icon(Icons.account_balance, color: Color(0xFF1C2536),),
@@ -78,14 +89,20 @@ class _AccountCreationPageState extends State<AccountCreationPage> {
                     }
                     return null;
                   },
+                  onChanged: (value){
+                    setState(() {
+                      _accountNameController.text = value;
+                      _accountNameController.selection = TextSelection.collapsed(offset: _accountNameController.text.length);
+                    });
+                  },
                   onSaved: (value) {
                     setState(() {
-                      accountModel.accountName = value!;
+                      accountModel.accountName = _accountNameController.text;
                     });
                   },
                 ),
                 TextFormField(
-                  controller: currentBalanceController,
+                  controller: _currentBalanceController,
                   keyboardType: TextInputType.number,
                   decoration: const InputDecoration(
                     hintText: "Enter current balance",
@@ -109,14 +126,20 @@ class _AccountCreationPageState extends State<AccountCreationPage> {
                     }
                     return null;
                   },
+                  onChanged: (value){
+                    setState(() {
+                      _currentBalanceController.text = value;
+                      _currentBalanceController.selection = TextSelection.collapsed(offset: _currentBalanceController.text.length);
+                    });
+                  },
                   onSaved: (value) {
                     setState(() {
-                      accountModel.currentBalance = double.parse(value!);
+                      accountModel.currentBalance = double.parse(_currentBalanceController.text);
                     });
                   },
                 ),
                 TextFormField(
-                  controller: currencyController,
+                  controller: _currencyController,
                   keyboardType: TextInputType.number,
                   decoration: const InputDecoration(
                     hintText: "Enter currency to use",
@@ -140,9 +163,15 @@ class _AccountCreationPageState extends State<AccountCreationPage> {
                     }
                     return null;
                   },
+                  onChanged: (value){
+                    setState(() {
+                      _currencyController.text = value.toUpperCase();
+                      _currencyController.selection = TextSelection.collapsed(offset: _currencyController.text.length);
+                    });
+                  },
                   onSaved: (value) {
                     setState(() {
-                      accountModel.currency = value!.toUpperCase();
+                      accountModel.currency = _currencyController.text;
                     });
                   },
                 ),

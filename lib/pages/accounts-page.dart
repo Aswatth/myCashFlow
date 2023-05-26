@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:my_cash_flow/pages/account-creation-page.dart';
+import 'package:my_cash_flow/pages/add-edit-account-page.dart';
 
 import '../models/account-model.dart';
 
@@ -37,45 +37,54 @@ class _AccountPageState extends State<AccountPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text("Accounts"),
+        actions: [
+          IconButton(onPressed: (){
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => AddEditAccountsPage(),
+                ));
+          }, icon: Icon(Icons.add))
+        ],
       ),
       body: ListView.builder(
         itemCount: _accountModelList.length,
         itemBuilder: (context, index) {
-          return ListTile(
-              title: Text(_accountModelList[index].accountName),
-              subtitle: Text(
-                  "${_accountModelList[index].currency} ${_accountModelList[index].currentBalance}"),
-              onTap: () {
-                if (_selectedAccountId != (index + 1)) {
-                  selectAccount(index + 1,_selectedAccountId);
-                }
-              },
-              trailing: _accountModelList[index].isSelected
-                  ? Chip(
-                      label: Icon(
-                        Icons.check,
-                        color: Colors.green,
-                      ),
-                      backgroundColor: Colors.greenAccent,
-                    )
-                  : Container(
-                      width: 1,
-                      height: 1,
-                    ));
+          return GestureDetector(
+            onTap: (){
+              //Edit
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => AddEditAccountsPage(existingAccountModel: _accountModelList[index]),
+                  ));
+            },
+            onDoubleTap: () {
+              if (_selectedAccountId != (index + 1)) {
+                selectAccount(index + 1,_selectedAccountId);
+              }
+            },
+            onLongPress: (){
+              //Delete account
+            },
+            child: ListTile(
+                title: Text(_accountModelList[index].accountName),
+                subtitle: Text(
+                    "${_accountModelList[index].currency} ${_accountModelList[index].currentBalance}"),
+                trailing: _accountModelList[index].isSelected
+                    ? Chip(
+                        label: Icon(
+                          Icons.check,
+                          color: Colors.green,
+                        ),
+                        backgroundColor: Colors.greenAccent,
+                      )
+                    : Container(
+                        width: 1,
+                        height: 1,
+                      )),
+          );
         },
-      ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: const Color(0xFF1C2536),
-        onPressed: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => AccountCreationPage(
-                  isNewUser: false,
-                ),
-              ));
-        },
-        child: Icon(Icons.add),
       ),
     );
   }

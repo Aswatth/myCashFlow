@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_cash_flow/models/password-model.dart';
-import 'package:my_cash_flow/pages/account-creation-page.dart';
+import 'package:my_cash_flow/pages/add-edit-account-page.dart';
 import 'package:my_cash_flow/pages/base-page.dart';
 
 class LoginPage extends StatefulWidget {
@@ -91,9 +91,7 @@ class _LoginState extends State<Login> {
       Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(
-            builder: (context) => AccountCreationPage(
-              isNewUser: widget.isNewUser,
-            ),),
+            builder: (context) => AddEditAccountsPage(),),
               (route) => false);
     }
   }

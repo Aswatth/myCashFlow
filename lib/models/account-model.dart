@@ -34,17 +34,20 @@ class AccountDbHelper {
     await db.execute(createTableQuery);
   }
 
-  insertAccount(AccountModel accountModel) async {
+  save(AccountModel accountModel) async {
     Database db = await DatabaseHelper.instance.database;
 
     List<AccountModel> existingAccountList = await getAllAccounts();
-    for (var element in existingAccountList) {print(element.toJson());}
     if(existingAccountList.isEmpty) {
       //If there are no accounts select the newly created account
       accountModel.isSelected = true;
     }
-    print("Account model to save: ${accountModel.toJson()}");
-    await db.insert(tableName, accountModel.toJson());
+    if(accountModel.id != null){
+      await db.update(tableName, accountModel.toJson(), where: "$id = ?", whereArgs: [accountModel.id]);
+    }
+    else{
+      await db.insert(tableName, accountModel.toJson());
+    }
   }
 
   Future<AccountModel?> getAccount(int accountId) async {
