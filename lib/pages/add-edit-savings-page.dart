@@ -3,27 +3,31 @@ import 'package:my_cash_flow/models/account-model.dart';
 import 'package:my_cash_flow/models/savings-model.dart';
 import 'package:my_cash_flow/pages/base-page.dart';
 
-class AddSavingsPage extends StatefulWidget {
-  const AddSavingsPage({Key? key}) : super(key: key);
+class AddEditSavingsPage extends StatefulWidget {
+  SavingsModel? existingSavingsModel;
+  AddEditSavingsPage({Key? key, this.existingSavingsModel}) : super(key: key);
 
   @override
-  _AddSavingsPageState createState() => _AddSavingsPageState();
+  _AddEditSavingsPageState createState() => _AddEditSavingsPageState();
 }
 
-class _AddSavingsPageState extends State<AddSavingsPage> {
-  SavingsModel savingsModel = new SavingsModel();
-  double _percentageToSave = 0;
-
-  Future<void> saveToDb() async {
+class _AddEditSavingsPageState extends State<AddEditSavingsPage> {
+  SavingsModel savingsModel = SavingsModel();
+  
+  TextEditingController _savingNameController = TextEditingController();
+  int _percentageToSave = 0;
+  TextEditingController _savingTargetAmountController = TextEditingController();
+  
+  save()async{
     int accountId = await AccountDbHelper.instance.getSelectedAccountId();
 
+    savingsModel.savingName = _savingNameController.text;
+    savingsModel.targetAmount = double.parse(_savingTargetAmountController.text);
+    savingsModel.percentage = _percentageToSave;
+    
     savingsModel.accountId = accountId;
-
-    SavingsDbHelper.instance.insert(savingsModel);
-  }
-
-  save(){
-    saveToDb().then((value){
+    
+    SavingsDbHelper.instance.save(savingsModel).then((value){
       Navigator.pop(context);
       Navigator.pop(context);
 
@@ -38,6 +42,14 @@ class _AddSavingsPageState extends State<AddSavingsPage> {
   @override
   void initState() {
     super.initState();
+    
+    if(widget.existingSavingsModel != null){
+      savingsModel = widget.existingSavingsModel!;
+      
+      _savingNameController.text = savingsModel.savingName;
+      _percentageToSave = savingsModel.percentage;
+      _savingTargetAmountController.text = savingsModel.targetAmount.toString();
+    }
   }
 
   @override
@@ -49,6 +61,7 @@ class _AddSavingsPageState extends State<AddSavingsPage> {
         body: ListView(
           children: [
             TextField(
+              controller: _savingNameController,
               decoration: const InputDecoration(
                 hintText: "Saving name",
                 prefixIcon: Icon(Icons.savings,color: const Color(0xFF1C2536),),
@@ -67,11 +80,13 @@ class _AddSavingsPageState extends State<AddSavingsPage> {
               ),
               onChanged: (String? value) {
                 setState(() {
-                  savingsModel.savingName = value!;
+                  _savingNameController.text = value ?? "";
+                  _savingNameController.selection = TextSelection.collapsed(offset: _savingNameController.text.length);
                 });
               },
             ),
             TextField(
+              controller: _savingTargetAmountController,
               keyboardType: TextInputType.number,
               decoration: const InputDecoration(
                 hintText: "Target amount",
@@ -91,7 +106,8 @@ class _AddSavingsPageState extends State<AddSavingsPage> {
               ),
               onChanged: (String value) {
                 setState(() {
-                  savingsModel.targetAmount = double.parse(value);
+                  _savingTargetAmountController.text = value ?? "";
+                  _savingTargetAmountController.selection = TextSelection.collapsed(offset: _savingTargetAmountController.text.length);
                 });
               },
             ),
@@ -103,14 +119,13 @@ class _AddSavingsPageState extends State<AddSavingsPage> {
               title: Text("% to save of current balance"),
               subtitle: Slider(
                 activeColor: const Color(0xFF1C2536),
-                value: _percentageToSave,
+                value: (_percentageToSave/100).toDouble(),
                 onChanged: (double value) {
                 setState(() {
-                  _percentageToSave = value;
-                  savingsModel.percentage = (_percentageToSave*100).toInt();
+                  _percentageToSave = (value*100).toInt();
                 });
               },),
-              trailing: Text("${savingsModel.percentage}%"),
+              trailing: Text("$_percentageToSave%"),
             ),
             Container(
               decoration: BoxDecoration(

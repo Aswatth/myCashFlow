@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:my_cash_flow/models/account-model.dart';
 
 import '../models/savings-model.dart';
+import 'add-edit-savings-page.dart';
 
 class SavingsPage extends StatefulWidget {
   const SavingsPage({Key? key}) : super(key: key);
@@ -64,6 +65,9 @@ class _SavingsPageState extends State<SavingsPage> {
       itemBuilder: (context, index) {
         SavingsModel savingsModel = savingsModelList[index];
         return GestureDetector(
+          onTap: (){
+            Navigator.push(context, MaterialPageRoute(builder: (context) => AddEditSavingsPage(existingSavingsModel: savingsModel,),));
+          },
           onLongPress: () {
             delete(savingsModel.id!);
           },

@@ -36,9 +36,15 @@ class SavingsDbHelper{
     await db.execute(createTableQuery);
   }
 
-  Future<void> insert(SavingsModel savingsModel) async{
+  Future<void> save(SavingsModel savingsModel) async{
     Database db = await DatabaseHelper.instance.database;
-    await db.insert(tableName, savingsModel.toJson());
+
+    if(savingsModel.id != null){
+      await db.update(tableName, savingsModel.toJson(), where: "$_id = ? AND $_accountId = ?", whereArgs: [savingsModel.id, savingsModel.accountId]);
+    }
+    else{
+      await db.insert(tableName, savingsModel.toJson());
+    }
   }
 
   Future<List<SavingsModel>> getAll(int accountId) async{
