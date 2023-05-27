@@ -39,7 +39,14 @@ class PasswordDbHelper{
   Future<void> setPassword(String password) async{
     Database db = await DatabaseHelper.instance.database;
     PasswordModel passwordModel = PasswordModel(password: password);
-    await db.insert(tableName, passwordModel.toJson());
+
+    bool isNewUser = await checkIfNewUser();
+    if(isNewUser){
+      await db.update(tableName, passwordModel.toJson());
+    }
+    else{
+      await db.update(tableName, passwordModel.toJson());
+    }
   }
 
   Future<bool> checkIfNewUser()async{

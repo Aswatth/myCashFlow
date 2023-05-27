@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_cash_flow/pages/accounts-page.dart';
+import 'package:my_cash_flow/pages/change-password-page.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);
@@ -25,7 +26,9 @@ class _ProfilePageState extends State<ProfilePage> {
         ListTile(
           leading: Icon(Icons.key),
           title: Text("Change password"),
-          onTap: () {},
+          onTap: () {
+            Navigator.push(context, MaterialPageRoute(builder: (context) => ChangePasswordPage(),));
+          },
         ),
       ],
     );
