@@ -97,6 +97,12 @@ class AccountDbHelper {
       await db.update(tableName, accountModelToDeselect.toJson() ,where: '$id = ?', whereArgs: [accountIdToDeselect]);
     }
   }
+
+  deleteAccount (int accountId)async{
+    Database db = await DatabaseHelper.instance.database;
+    await db.delete(tableName, where: "$id = ?", whereArgs: [accountId]);
+  }
+
 }
 class AccountModel {
   int? id;

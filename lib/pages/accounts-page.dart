@@ -25,9 +25,18 @@ class _AccountPageState extends State<AccountPage> {
     fetchData();
   }
 
+  deleteAccount(int accountId)async{
+    if(_selectedAccountId == accountId){
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Cannot delete selected account\nSelect another account and delete this")));
+    }
+    else{
+      await AccountDbHelper.instance.deleteAccount(accountId);
+      fetchData();
+    }
+  }
+
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     fetchData();
   }
@@ -66,6 +75,7 @@ class _AccountPageState extends State<AccountPage> {
             },
             onLongPress: (){
               //Delete account
+              deleteAccount(_accountModelList[index].id!);
             },
             child: ListTile(
                 title: Text(_accountModelList[index].accountName),

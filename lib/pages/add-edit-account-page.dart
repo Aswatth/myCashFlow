@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:my_cash_flow/helpers/globals.dart';
 import 'package:my_cash_flow/models/account-model.dart';
 import 'package:my_cash_flow/pages/accounts-page.dart';
 import 'package:my_cash_flow/pages/base-page.dart';
@@ -48,7 +49,7 @@ class _AddEditAccountsPageState extends State<AddEditAccountsPage> {
     if(widget.existingAccountModel != null){
       accountModel = widget.existingAccountModel!;
       _accountNameController.text = accountModel.accountName;
-      _currentBalanceController.text = accountModel.currentBalance.toString();
+      _currentBalanceController.text = NumberFormatter.format(accountModel.currentBalance);
       _currencyController.text = accountModel.currency;
     }
   }
@@ -128,13 +129,13 @@ class _AddEditAccountsPageState extends State<AddEditAccountsPage> {
                   },
                   onChanged: (value){
                     setState(() {
-                      _currentBalanceController.text = value;
+                      _currentBalanceController.text = NumberFormatter.format(double.parse(value.replaceAll(",", "")));
                       _currentBalanceController.selection = TextSelection.collapsed(offset: _currentBalanceController.text.length);
                     });
                   },
                   onSaved: (value) {
                     setState(() {
-                      accountModel.currentBalance = double.parse(_currentBalanceController.text);
+                      accountModel.currentBalance = double.parse(_currentBalanceController.text.replaceAll(",", ""));
                     });
                   },
                 ),
