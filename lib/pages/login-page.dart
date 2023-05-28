@@ -21,6 +21,7 @@ class _LoginPageState extends State<LoginPage> {
       //Check is password already exists -> Whether it is new user or returning user
       bool isNewUser = await PasswordDbHelper.instance.checkIfNewUser();
       if(isNewUser){
+        await PasswordDbHelper.instance.setPassword(password);
         return PasswordResult.SIGNUP;
       }
       else {

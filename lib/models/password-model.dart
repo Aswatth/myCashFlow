@@ -26,8 +26,7 @@ class PasswordDbHelper{
   
   Future<String> getPassword()async{
     Database db = await DatabaseHelper.instance.database;
-    List<Map<String,dynamic>> data = await db.query(tableName,);
-    print(data);
+    List<Map<String,dynamic>> data = await db.query(tableName);
     try{
       return PasswordModel.fromJson(data.first).password;
     }
