@@ -1,4 +1,6 @@
+import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:my_cash_flow/helpers/globalData.dart';
 import 'package:my_cash_flow/models/account-model.dart';
 import 'package:my_cash_flow/models/investment-model.dart';
@@ -19,10 +21,14 @@ class _AddEditInvestmentPageState extends State<AddEditInvestmentPage> {
 
   final TextEditingController _investmentNameController = TextEditingController();
   final TextEditingController _investmentAmountController = TextEditingController();
+  final TextEditingController _investmentDateController = TextEditingController();
+  final TextEditingController _investmentCommentsController = TextEditingController();
 
   save() async{
     investmentModel.investmentName = _investmentNameController.text;
     investmentModel.amountInvested = double.parse(_investmentAmountController.text.replaceAll(",", ""));
+    investmentModel.date = DateTime.parse(_investmentDateController.text);
+    investmentModel.comments = _investmentCommentsController.text;
 
     int accountId = await AccountDbHelper.instance.getSelectedAccountId();
     investmentModel.accountId = accountId;
@@ -48,6 +54,8 @@ class _AddEditInvestmentPageState extends State<AddEditInvestmentPage> {
 
      _investmentNameController.text = investmentModel.investmentName;
      _investmentAmountController.text = NumberFormatter.format(investmentModel.amountInvested);
+     _investmentDateController.text = investmentModel.date!.toString();
+    _investmentCommentsController.text = investmentModel.comments;
     }
   }
 
@@ -108,6 +116,77 @@ class _AddEditInvestmentPageState extends State<AddEditInvestmentPage> {
                 _investmentAmountController.text = NumberFormatter.format(double.parse(value!.replaceAll(",", "")));
                 _investmentAmountController.selection = TextSelection.collapsed(offset: _investmentAmountController.text.length);
               });
+            },
+          ),
+          DateTimePicker(
+            controller: _investmentDateController,
+            decoration: const InputDecoration(
+              hintText: "Next investment/ Invested date",
+              prefixIcon: Icon(
+                Icons.calendar_today,
+                color: const Color(0xFF1C2536),
+              ),
+              enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                  borderSide: BorderSide(
+                    color: Color(0xFF1C2536),
+                  )),
+              focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                  borderSide: BorderSide(
+                    color: Color(0xFF1C2536),
+                  )),
+            ),
+            //key: _formKey,
+            type: DateTimePickerType.date,
+            dateMask: "dd-MMM-yyyy",
+            firstDate: DateTime(1999),
+            lastDate: DateTime(2100),
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return "Date cannot be empty";
+              }
+              return null;
+            },
+            onChanged: (String? _) {
+              setState(() {
+                _investmentDateController.text = _!;
+              });
+            },
+          ),
+          TextFormField(
+            //key: _formKey,
+            controller: _investmentCommentsController,
+            keyboardType: TextInputType.text,
+            maxLength: 25,
+            decoration: const InputDecoration(
+              hintText: "Comments",
+              prefixIcon: Icon(
+                Icons.text_snippet,
+                color: const Color(0xFF1C2536),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                borderSide: BorderSide(
+                  color: Color(0xFF1C2536),
+                ),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                borderSide: BorderSide(
+                  color: Color(0xFF1C2536),
+                ),
+              ),
+            ),
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return "Comments cannot be empty";
+              }
+              return null;
+            },
+            onChanged: (_) {
+              _investmentCommentsController.text = _;
+              _investmentCommentsController.selection = TextSelection.collapsed(offset: _investmentCommentsController.text.length);
             },
           ),
           Container(

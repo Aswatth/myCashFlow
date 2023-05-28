@@ -1,3 +1,4 @@
+import 'package:intl/intl.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../helpers/database-helper.dart';
@@ -9,6 +10,8 @@ class InvestmentDbHelper{
   final String _id = "id"; //Column name
   final String _investmentName = "investmentName";
   final String _amountInvested = "amountInvested";
+  final String _date = "date";
+  final String _comments = "comments";
   final String _accountId = "accountId";
 
   static final InvestmentDbHelper instance = InvestmentDbHelper._privateConstructor();
@@ -24,6 +27,8 @@ class InvestmentDbHelper{
     $_id INTEGER PRIMARY KEY AUTOINCREMENT,
     $_investmentName TEXT,
     $_amountInvested REAL,
+    $_date TEXT,
+    $_comments TEXT,
     $_accountId INTEGER,
     FOREIGN KEY($_accountId) REFERENCES ${AccountDbHelper.instance.tableName}(${AccountDbHelper.instance.id}) ON UPDATE CASCADE ON DELETE NO ACTION
     )
@@ -59,6 +64,8 @@ class InvestmentModel{
   int? id;
   String investmentName = "";
   double amountInvested = 0;
+  DateTime? date;
+  String comments = "";
   int? accountId;
 
   InvestmentModel();
@@ -67,6 +74,8 @@ class InvestmentModel{
     id = json['id'];
     investmentName = json['investmentName'];
     amountInvested = json['amountInvested'];
+    date = DateFormat("dd-MMM-yyyy").parse(json['date']);
+    comments = json['comments'];
     accountId = json['accountId'];
   }
 
@@ -74,6 +83,8 @@ class InvestmentModel{
     'id': id,
     'investmentName': investmentName,
     'amountInvested': amountInvested,
+    'date': DateFormat("dd-MMM-yyyy").format(date!),
+    'comments': comments,
     'accountId': accountId
   };
 }
