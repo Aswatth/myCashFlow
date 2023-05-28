@@ -5,6 +5,7 @@ import 'package:my_cash_flow/models/transaction-model.dart';
 import 'package:my_cash_flow/models/transactionTypeEnum.dart';
 import 'package:my_cash_flow/pages/expense-chart.dart';
 
+import '../helpers/enums.dart';
 import '../helpers/globals.dart';
 
 class HomePage extends StatefulWidget {

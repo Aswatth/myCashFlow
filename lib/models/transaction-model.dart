@@ -6,6 +6,7 @@ import 'package:my_cash_flow/models/transactionTypeEnum.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../helpers/database-helper.dart';
+import '../helpers/enums.dart';
 import '../helpers/globals.dart';
 
 class TransactionDbHelper{

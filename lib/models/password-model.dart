@@ -27,7 +27,7 @@ class PasswordDbHelper{
   Future<String> getPassword()async{
     Database db = await DatabaseHelper.instance.database;
     List<Map<String,dynamic>> data = await db.query(tableName,);
-
+    print(data);
     try{
       return PasswordModel.fromJson(data.first).password;
     }
@@ -42,7 +42,7 @@ class PasswordDbHelper{
 
     bool isNewUser = await checkIfNewUser();
     if(isNewUser){
-      await db.update(tableName, passwordModel.toJson());
+      await db.insert(tableName, passwordModel.toJson());
     }
     else{
       await db.update(tableName, passwordModel.toJson());

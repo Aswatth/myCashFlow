@@ -6,6 +6,7 @@ import 'package:my_cash_flow/models/transactionFilter-model.dart';
 import 'package:my_cash_flow/models/transactionTypeEnum.dart';
 import 'package:my_cash_flow/pages/add-edit-transaction-page.dart';
 
+import '../helpers/enums.dart';
 import '../helpers/globals.dart';
 import '../models/account-model.dart';
 import '../models/transaction-category.dart';
