@@ -27,14 +27,18 @@ class _ExpenseChartState extends State<ExpenseChart> {
       }
 
       for (var element in categorizedAmounts) {
+        Category category = categoryList.where((w) => w.name == element['category']).first;
         _pieChartData.add(PieChartSectionData(
             radius: 100,
             color: categoryList.where((w) => w.name == element['category']).first.color,
-            badgeWidget: Icon(categoryList.where((w) => w.name == element['category']).first.icon,color: Colors.white,),
-            badgePositionPercentageOffset: 0.7,
+            badgeWidget: CircleAvatar(child: Padding(
+              padding: const EdgeInsets.all(1.0),
+              child: CircleAvatar(child: Icon(category.icon,color: const Color(0xFF1C2536)), backgroundColor: Colors.white,),
+            ),backgroundColor: category.color,),
+            badgePositionPercentageOffset: 0.95,
             titleStyle: TextStyle(color: Colors.white),
             value: (element['AMOUNT']/ expenseSum) * 100,
-            title: "${element['category']} ${((element['AMOUNT']/ expenseSum) * 100).toStringAsFixed(0)}%"
+            title: "${((element['AMOUNT']/ expenseSum) * 100).toStringAsFixed(0)}%"
         ));
       }
     });
