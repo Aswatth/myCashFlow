@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:my_cash_flow/helpers/globalData.dart';
 import 'package:my_cash_flow/models/account-model.dart';
 import 'package:my_cash_flow/models/savings-model.dart';
 import 'package:my_cash_flow/pages/base-page.dart';
@@ -22,7 +24,7 @@ class _AddEditSavingsPageState extends State<AddEditSavingsPage> {
     int accountId = await AccountDbHelper.instance.getSelectedAccountId();
 
     savingsModel.savingName = _savingNameController.text;
-    savingsModel.targetAmount = double.parse(_savingTargetAmountController.text);
+    savingsModel.targetAmount = double.parse(_savingTargetAmountController.text.replaceAll(",", ""));
     savingsModel.percentage = _percentageToSave;
     
     savingsModel.accountId = accountId;
@@ -48,7 +50,7 @@ class _AddEditSavingsPageState extends State<AddEditSavingsPage> {
       
       _savingNameController.text = savingsModel.savingName;
       _percentageToSave = savingsModel.percentage;
-      _savingTargetAmountController.text = savingsModel.targetAmount.toString();
+      _savingTargetAmountController.text = NumberFormatter.format(savingsModel.targetAmount);
     }
   }
 
@@ -106,7 +108,7 @@ class _AddEditSavingsPageState extends State<AddEditSavingsPage> {
               ),
               onChanged: (String value) {
                 setState(() {
-                  _savingTargetAmountController.text = value ?? "";
+                  _savingTargetAmountController.text = NumberFormatter.format(double.parse(value.replaceAll(",", "")));
                   _savingTargetAmountController.selection = TextSelection.collapsed(offset: _savingTargetAmountController.text.length);
                 });
               },

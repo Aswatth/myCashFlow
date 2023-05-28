@@ -28,8 +28,6 @@ class TransactionFilterService{
 
     //Filtering on amount
     if(transactionFilterModel.minAmount != null && transactionFilterModel.maxAmount != null){
-      print(transactionFilterModel.minAmount!);
-      print(transactionFilterModel.maxAmount!);
       filteredOnAmountData = await TransactionDbHelper.instance.filterDataOnMinMaxAmount(accountId, transactionFilterModel.minAmount!, transactionFilterModel.maxAmount!);
     }
     else if(transactionFilterModel.minAmount != null){
@@ -83,9 +81,6 @@ class TransactionFilterService{
     else{
       data = consolidatedData;
     }
-
-    print(data.length);
-
     return data;
   }
 }

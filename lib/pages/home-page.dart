@@ -5,6 +5,8 @@ import 'package:my_cash_flow/models/transaction-model.dart';
 import 'package:my_cash_flow/models/transactionTypeEnum.dart';
 import 'package:my_cash_flow/pages/expense-chart.dart';
 
+import '../helpers/globalData.dart';
+
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
 
@@ -17,8 +19,6 @@ class _HomePageState extends State<HomePage> {
 
   double creditedAmount = 0;
   double debitedAmount = 0;
-
-  NumberFormat formatter = NumberFormat("#,###,###");
 
   getData() async {
     AccountModel? selectedAccount =
@@ -68,7 +68,7 @@ class _HomePageState extends State<HomePage> {
                     style: TextStyle(color: Colors.white),
                   ),
                   Text(
-                    "${account.currency} ${account.currentBalance.toStringAsFixed(2)}",
+                    "${account.currency} ${NumberFormatter.format(account.currentBalance)}",
                     style: const TextStyle(color: Colors.white, fontSize: 25),
                   ),
                   Row(
@@ -81,7 +81,7 @@ class _HomePageState extends State<HomePage> {
                             color: Colors.greenAccent,
                           ),
                           Text(
-                            "${account.currency} ${formatter.format(creditedAmount)}",
+                            "${account.currency} ${NumberFormatter.format(creditedAmount)}",
                             style: TextStyle(color: Colors.white),
                           ),
                         ],
@@ -93,7 +93,7 @@ class _HomePageState extends State<HomePage> {
                             color: Colors.redAccent,
                           ),
                           Text(
-                            "${account.currency} ${formatter.format(debitedAmount)}",
+                            "${account.currency} ${NumberFormatter.format(debitedAmount)}",
                             style: TextStyle(color: Colors.white),
                           ),
                         ],

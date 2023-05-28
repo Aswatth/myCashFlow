@@ -6,6 +6,7 @@ import 'package:my_cash_flow/models/transactionFilter-model.dart';
 import 'package:my_cash_flow/models/transactionTypeEnum.dart';
 import 'package:my_cash_flow/pages/add-edit-transaction-page.dart';
 
+import '../helpers/globalData.dart';
 import '../models/account-model.dart';
 import '../models/transaction-category.dart';
 
@@ -21,26 +22,9 @@ class _TransactionPageState extends State<TransactionPage> {
 
   String currency = "";
 
-  NumberFormat formatter = NumberFormat("#,###,###");
-
   bool _filterFlag = false;
   bool hasFilters = false;
   List<bool> _isSelected = [];
-
-  final List<String> _months = [
-    "Jan",
-    "Feb",
-    "Mar",
-    "Apr",
-    "May",
-    "Jun",
-    "Jul",
-    "Aug",
-    "Sep",
-    "Oct",
-    "Nov",
-    "Dec"
-  ];
 
   String? _selectedStartMonth;
   String? _selectedEndMonth;
@@ -163,7 +147,7 @@ class _TransactionPageState extends State<TransactionPage> {
         ExpansionPanel(
             headerBuilder: (context, isExpanded) {
               return ListTile(
-                leading: hasFilters?Icon(Icons.filter_alt,color: Colors.greenAccent,):Icon(Icons.filter_alt_off),
+                leading: hasFilters?Icon(Icons.filter_alt,color: const Color(0xFF1C2536),):Icon(Icons.filter_alt_off),
                 title: Text("Filter"),
               );
             },
@@ -191,7 +175,7 @@ class _TransactionPageState extends State<TransactionPage> {
                       child: DropdownButton(
                         value: _selectedStartMonth,
                         hint: Text("Month"),
-                        items: _months.map<DropdownMenuItem<String>>((e) {
+                        items: Months.map<DropdownMenuItem<String>>((e) {
                           return DropdownMenuItem(
                             child: Text(e),
                             value: e,
@@ -241,7 +225,7 @@ class _TransactionPageState extends State<TransactionPage> {
                       child: DropdownButton(
                         value: _selectedEndMonth,
                         hint: Text("Month"),
-                        items: _months.map<DropdownMenuItem<String>>((e) {
+                        items: Months.map<DropdownMenuItem<String>>((e) {
                           return DropdownMenuItem(
                             child: Text(e),
                             value: e,
@@ -451,7 +435,7 @@ class _TransactionPageState extends State<TransactionPage> {
               ),
               trailing: Chip(
                 label: Text(
-                  "$currency ${formatter.format(transactionModel.amount!)}",
+                  "$currency ${NumberFormatter.format(transactionModel.amount!)}",
                   style: TextStyle(color: Colors.white),
                 ),
                 backgroundColor: const Color(0xFF1C2536),

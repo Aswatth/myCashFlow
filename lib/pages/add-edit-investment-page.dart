@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_cash_flow/helpers/globalData.dart';
 import 'package:my_cash_flow/models/account-model.dart';
 import 'package:my_cash_flow/models/investment-model.dart';
 import 'package:my_cash_flow/pages/base-page.dart';
@@ -21,7 +22,7 @@ class _AddEditInvestmentPageState extends State<AddEditInvestmentPage> {
 
   save() async{
     investmentModel.investmentName = _investmentNameController.text;
-    investmentModel.amountInvested = double.parse(_investmentAmountController.text);
+    investmentModel.amountInvested = double.parse(_investmentAmountController.text.replaceAll(",", ""));
 
     int accountId = await AccountDbHelper.instance.getSelectedAccountId();
     investmentModel.accountId = accountId;
@@ -46,7 +47,7 @@ class _AddEditInvestmentPageState extends State<AddEditInvestmentPage> {
      investmentModel = widget.existingInvestmentModel!;
 
      _investmentNameController.text = investmentModel.investmentName;
-     _investmentAmountController.text = investmentModel.amountInvested.toString();
+     _investmentAmountController.text = NumberFormatter.format(investmentModel.amountInvested);
     }
   }
 
@@ -104,7 +105,7 @@ class _AddEditInvestmentPageState extends State<AddEditInvestmentPage> {
             ),
             onChanged: (String? value) {
               setState(() {
-                _investmentAmountController.text = value == null? "":value!;
+                _investmentAmountController.text = NumberFormatter.format(double.parse(value!.replaceAll(",", "")));
                 _investmentAmountController.selection = TextSelection.collapsed(offset: _investmentAmountController.text.length);
               });
             },

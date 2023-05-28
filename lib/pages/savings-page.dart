@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:my_cash_flow/models/account-model.dart';
 
+import '../helpers/globalData.dart';
 import '../models/savings-model.dart';
 import 'add-edit-savings-page.dart';
 
@@ -86,18 +87,18 @@ class _SavingsPageState extends State<SavingsPage> {
                         style: TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 20),
                       ),
-                      Text("${savingsModel.percentage}% of ${currency} ${currentBalance.toStringAsFixed(2)}")
+                      Text("${savingsModel.percentage}% of $currency ${NumberFormatter.format(currentBalance)}")
                     ],
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        "${currency} ${getCurrentAmount(savingsModel.percentage).toStringAsFixed(2)}",
+                        "${currency} ${NumberFormatter.format(getCurrentAmount(savingsModel.percentage))}",
                         style: TextStyle(fontStyle: FontStyle.italic, fontWeight: FontWeight.bold),
                       ),
                       Text(
-                        "Target: ${currency} ${savingsModel.targetAmount.toStringAsFixed(2)}",
+                        "Target: ${currency} ${NumberFormatter.format(savingsModel.targetAmount)}",
                         style: TextStyle(fontStyle: FontStyle.italic, fontWeight: FontWeight.bold),
                       )
                     ],

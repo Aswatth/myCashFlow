@@ -5,6 +5,7 @@ import 'package:my_cash_flow/models/transaction-model.dart';
 import 'package:my_cash_flow/models/transactionTypeEnum.dart';
 import 'package:my_cash_flow/pages/base-page.dart';
 
+import '../helpers/globalData.dart';
 import '../models/transaction-category.dart';
 
 class Add_EditTransactionPage extends StatefulWidget {
@@ -40,7 +41,7 @@ class _Add_EditTransactionPageState extends State<Add_EditTransactionPage> {
         await AccountDbHelper.instance.getSelectedAccountId();
 
     transactionModel.transactionDate = DateTime.parse(_transactionDateController.text);
-    transactionModel.amount = double.parse(_transactionAmountController.text);
+    transactionModel.amount = double.parse(_transactionAmountController.text.replaceAll(",", ""));
     transactionModel.comments = _transactionCommentsController.text;
 
     transactionModel.transactionType = _selectedTransactionType;
@@ -82,7 +83,7 @@ class _Add_EditTransactionPageState extends State<Add_EditTransactionPage> {
       transactionModel = widget.existingTransactionModel!;
 
       _transactionDateController.text = transactionModel.transactionDate.toString();
-      _transactionAmountController.text = transactionModel.amount.toString();
+      _transactionAmountController.text = NumberFormatter.format(transactionModel.amount);
       _transactionCommentsController.text = transactionModel.comments;
 
       _selectedTransactionType = transactionModel.transactionType!;
@@ -195,7 +196,7 @@ class _Add_EditTransactionPageState extends State<Add_EditTransactionPage> {
               return null;
             },
             onChanged: (_) {
-              _transactionAmountController.text = _;
+              _transactionAmountController.text = NumberFormatter.format(double.parse(_.replaceAll(",", "")));
               _transactionAmountController.selection = TextSelection.collapsed(offset: _transactionAmountController.text.length);
             },
           ),
