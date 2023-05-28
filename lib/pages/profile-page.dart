@@ -13,24 +13,69 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        ListTile(
-          leading: Icon(Icons.account_balance),
-          title: Text("Accounts"),
-          onTap: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => AccountPage(),));
-          },
+    return Scaffold(
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Expanded(
+              child: GestureDetector(
+                onTap: (){
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => AccountPage(),));
+                },
+                child: Card(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20.0)),
+                  color: const Color(0xFF1C2536),
+                  child: Center(
+                      child: Transform.scale(
+                        scale: 1.5,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            CircleAvatar(
+                              child: Icon(Icons.account_balance,color: const Color(0xFF1C2536),),
+                              backgroundColor: Colors.white,
+                            ),
+                            Text("Accounts", style: TextStyle(color: Colors.white),),
+                          ].map((e) => Padding(padding: const EdgeInsets.all(10.0),child: e,)).toList(),
+                        ),
+                      )
+                  ),
+                ),
+              ),
+            ),
+            Expanded(
+              child: GestureDetector(
+                onTap: (){
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => ChangePasswordPage(),));
+                },
+                child: Card(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20.0)),
+                  color: const Color(0xFF1C2536),
+                  child: Center(
+                    child: Transform.scale(
+                      scale: 1.5,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          CircleAvatar(
+                            child: Icon(Icons.lock,color: const Color(0xFF1C2536),),
+                            backgroundColor: Colors.white,
+                          ),
+                          Text("Change password", style: TextStyle(color: Colors.white),),
+                        ].map((e) => Padding(padding: const EdgeInsets.all(10.0),child: e,)).toList(),
+                      ),
+                    )
+                  ),
+                ),
+              ),
+            ),
+          ]
         ),
-        ListTile(
-          leading: Icon(Icons.key),
-          title: Text("Change password"),
-          onTap: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => ChangePasswordPage(),));
-          },
-        ),
-      ],
+      ),
     );
   }
 }
