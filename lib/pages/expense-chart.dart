@@ -36,7 +36,7 @@ class _ExpenseChartState extends State<ExpenseChart> {
               child: CircleAvatar(child: Icon(category.icon,color: const Color(0xFF1C2536)), backgroundColor: Colors.white,),
             ),backgroundColor: category.color,),
             badgePositionPercentageOffset: 0.95,
-            titleStyle: TextStyle(color: Colors.white),
+            titleStyle: TextStyle(fontWeight: FontWeight.bold),
             value: (element['AMOUNT']/ expenseSum) * 100,
             title: "${((element['AMOUNT']/ expenseSum) * 100).toStringAsFixed(0)}%"
         ));
