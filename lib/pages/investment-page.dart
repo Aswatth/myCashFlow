@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:my_cash_flow/helpers/globalData.dart';
+import 'package:my_cash_flow/helpers/globals.dart';
 import 'package:my_cash_flow/models/account-model.dart';
 
 import '../models/investment-model.dart';
@@ -55,11 +55,11 @@ class _InvestmentPageState extends State<InvestmentPage> {
             subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(DateFormat("dd-MMM-yyyy").format(investmentModel.date!)),
+                Text(DateFormatter.format(investmentModel.date!)),
                 Text(investmentModel.comments)
               ].map((e) => Padding(padding: const EdgeInsets.all(4.0), child: e,)).toList(),
             ),
-            trailing: Chip(label: Text("${currency} ${NumberFormatter.format(investmentModel.amountInvested)}", style: TextStyle(color: Colors.white),),backgroundColor: const Color(0xFF1C2536),),
+            trailing: Chip(label: Text("$currency ${NumberFormatter.format(investmentModel.amountInvested)}", style: TextStyle(color: Colors.white),),backgroundColor: const Color(0xFF1C2536),),
             onTap: (){
               Navigator.push(context, MaterialPageRoute(builder: (context) => AddEditInvestmentPage(existingInvestmentModel: investmentModel,),));
             },

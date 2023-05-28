@@ -6,6 +6,7 @@ import 'package:my_cash_flow/models/transactionTypeEnum.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../helpers/database-helper.dart';
+import '../helpers/globals.dart';
 
 class TransactionDbHelper{
   final String tableName = "TransactionTable";
@@ -153,7 +154,7 @@ class TransactionModel{
 
   TransactionModel.fromJson(Map<String, dynamic> json){
     id = json['id'];
-    transactionDate = DateFormat('dd-MMM-yyyy').parse(json['transactionDate']);
+    transactionDate = DateFormatter.parse(json['transactionDate']);
     amount = json['amount'];
     comments = json['comments'];
     category = json['category'];
@@ -163,7 +164,7 @@ class TransactionModel{
 
   Map<String,dynamic> toJson() => {
     'id': id,
-    'transactionDate': DateFormat('dd-MMM-yyyy').format(transactionDate!).toString(),
+    'transactionDate': DateFormatter.format(transactionDate!).toString(),
     'amount': amount,
     'comments': comments,
     'category': category,

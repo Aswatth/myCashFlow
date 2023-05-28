@@ -1,7 +1,7 @@
 import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:my_cash_flow/helpers/globalData.dart';
+import 'package:my_cash_flow/helpers/globals.dart';
 import 'package:my_cash_flow/models/account-model.dart';
 import 'package:my_cash_flow/models/investment-model.dart';
 import 'package:my_cash_flow/pages/base-page.dart';

@@ -6,7 +6,7 @@ import 'package:my_cash_flow/models/transactionFilter-model.dart';
 import 'package:my_cash_flow/models/transactionTypeEnum.dart';
 import 'package:my_cash_flow/pages/add-edit-transaction-page.dart';
 
-import '../helpers/globalData.dart';
+import '../helpers/globals.dart';
 import '../models/account-model.dart';
 import '../models/transaction-category.dart';
 
@@ -424,7 +424,7 @@ class _TransactionPageState extends State<TransactionPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "${DateFormat("dd-MMM-yyyy").format(transactionModel.transactionDate!).toString()}",
+                    DateFormatter.format(transactionModel.transactionDate!).toString(),
                     style: TextStyle(fontWeight: FontWeight.w900),
                   ),
                   Text(

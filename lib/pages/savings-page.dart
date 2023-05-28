@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:my_cash_flow/models/account-model.dart';
 
-import '../helpers/globalData.dart';
+import '../helpers/globals.dart';
 import '../models/savings-model.dart';
 import 'add-edit-savings-page.dart';
 

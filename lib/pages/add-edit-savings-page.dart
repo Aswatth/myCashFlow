@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:my_cash_flow/helpers/globalData.dart';
+import 'package:my_cash_flow/helpers/globals.dart';
 import 'package:my_cash_flow/models/account-model.dart';
 import 'package:my_cash_flow/models/savings-model.dart';
 import 'package:my_cash_flow/pages/base-page.dart';

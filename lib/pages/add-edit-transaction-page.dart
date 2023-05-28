@@ -5,7 +5,7 @@ import 'package:my_cash_flow/models/transaction-model.dart';
 import 'package:my_cash_flow/models/transactionTypeEnum.dart';
 import 'package:my_cash_flow/pages/base-page.dart';
 
-import '../helpers/globalData.dart';
+import '../helpers/globals.dart';
 import '../models/transaction-category.dart';
 
 class Add_EditTransactionPage extends StatefulWidget {

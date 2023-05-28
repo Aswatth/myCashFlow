@@ -2,6 +2,7 @@ import 'package:intl/intl.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../helpers/database-helper.dart';
+import '../helpers/globals.dart';
 import 'account-model.dart';
 
 class InvestmentDbHelper{
@@ -74,7 +75,7 @@ class InvestmentModel{
     id = json['id'];
     investmentName = json['investmentName'];
     amountInvested = json['amountInvested'];
-    date = DateFormat("dd-MMM-yyyy").parse(json['date']);
+    date = DateFormatter.parse(json['date']);
     comments = json['comments'];
     accountId = json['accountId'];
   }
@@ -83,7 +84,7 @@ class InvestmentModel{
     'id': id,
     'investmentName': investmentName,
     'amountInvested': amountInvested,
-    'date': DateFormat("dd-MMM-yyyy").format(date!),
+    'date': DateFormatter.format(date!),
     'comments': comments,
     'accountId': accountId
   };
