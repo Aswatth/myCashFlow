@@ -132,7 +132,7 @@ class TransactionDbHelper{
     List<Map<String,double>> categorizedAmounts = [];
 
     Database db = await DatabaseHelper.instance.database;
-    return await db.rawQuery("SELECT ${_category}, SUM(${_amount}) AS AMOUNT FROM ${tableName} WHERE ${_transactionType} = 0 GROUP BY ${_category}");
+    return await db.rawQuery("SELECT ${_category}, SUM(${_amount}) AS AMOUNT FROM ${tableName} WHERE ${_transactionType} = 0 AND ${_accountId} = $accountId GROUP BY ${_category}");
   }
 
   Future<void> delete(int transactionId) async{
