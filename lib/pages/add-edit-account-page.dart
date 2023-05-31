@@ -129,7 +129,7 @@ class _AddEditAccountsPageState extends State<AddEditAccountsPage> {
                   },
                   onChanged: (value){
                     setState(() {
-                      _currentBalanceController.text = NumberFormatter.format(double.parse(value.replaceAll(",", "")));
+                      _currentBalanceController.text = value == ""?"":NumberFormatter.format(double.parse(value.replaceAll(",", "")));
                       _currentBalanceController.selection = TextSelection.collapsed(offset: _currentBalanceController.text.length);
                     });
                   },

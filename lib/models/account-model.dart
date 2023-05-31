@@ -50,6 +50,14 @@ class AccountDbHelper {
     }
   }
 
+  updateCurrentBalance(double amount)async{
+    AccountModel? accountModel = await getSelectedAccount();
+    if(accountModel != null){
+      accountModel.currentBalance += amount;
+      await save(accountModel);
+    }
+  }
+
   Future<AccountModel?> getAccount(int accountId) async {
     Database db = await DatabaseHelper.instance.database;
     List<Map<String, dynamic>> data = await db.query(

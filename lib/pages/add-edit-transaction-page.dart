@@ -41,6 +41,16 @@ class _Add_EditTransactionPageState extends State<Add_EditTransactionPage> {
     int selectedAccountId =
         await AccountDbHelper.instance.getSelectedAccountId();
 
+    //Reverting old transaction changes to current balance
+    if(transactionModel.id != null){
+      if(transactionModel.transactionType == TransactionType.CREDIT){
+        await AccountDbHelper.instance.updateCurrentBalance(-transactionModel.amount!);
+      }
+      else{
+        await AccountDbHelper.instance.updateCurrentBalance(transactionModel.amount!);
+      }
+    }
+
     transactionModel.transactionDate = DateTime.parse(_transactionDateController.text);
     transactionModel.amount = double.parse(_transactionAmountController.text.replaceAll(",", ""));
     transactionModel.comments = _transactionCommentsController.text;
@@ -51,6 +61,14 @@ class _Add_EditTransactionPageState extends State<Add_EditTransactionPage> {
         ? categoryList[_currentSelectedIndex].name
         : categoryList[categoryList.length - 1].name;
     transactionModel.accountId = selectedAccountId;
+
+    //Updating current balance with new/updated transaction
+    if(transactionModel.transactionType == TransactionType.CREDIT){
+      await AccountDbHelper.instance.updateCurrentBalance(transactionModel.amount!);
+    }
+    else{
+      await AccountDbHelper.instance.updateCurrentBalance(-transactionModel.amount!);
+    }
 
     //print(transactionModel.toJson());
     TransactionDbHelper.instance.save(transactionModel).then((value) {
@@ -197,7 +215,7 @@ class _Add_EditTransactionPageState extends State<Add_EditTransactionPage> {
               return null;
             },
             onChanged: (_) {
-              _transactionAmountController.text = NumberFormatter.format(double.parse(_.replaceAll(",", "")));
+              _transactionAmountController.text = _ == ""?"":NumberFormatter.format(double.parse(_.replaceAll(",", "")));
               _transactionAmountController.selection = TextSelection.collapsed(offset: _transactionAmountController.text.length);
             },
           ),

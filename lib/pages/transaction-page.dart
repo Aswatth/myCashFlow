@@ -77,8 +77,16 @@ class _TransactionPageState extends State<TransactionPage> {
     }
   }
 
-  deleteTransaction(int id) async {
-    await TransactionDbHelper.instance.delete(id);
+  deleteTransaction(TransactionModel transactionModel) async {
+    if(transactionModel.id != null){
+      if(transactionModel.transactionType == TransactionType.CREDIT){
+        await AccountDbHelper.instance.updateCurrentBalance(-transactionModel.amount!);
+      }
+      else{
+        await AccountDbHelper.instance.updateCurrentBalance(transactionModel.amount!);
+      }
+    }
+    await TransactionDbHelper.instance.delete(transactionModel.id!);
     await getTransactions();
   }
 
@@ -449,7 +457,7 @@ class _TransactionPageState extends State<TransactionPage> {
                     ));
               },
               onLongPress: () {
-                deleteTransaction(transactionModel.id!);
+                deleteTransaction(transactionModel);
               },
             ),
           ]
