@@ -21,15 +21,18 @@ class _AccountPageState extends State<AccountPage> {
   }
 
   selectAccount(int idToSelect, int idToDeselect) async {
+    print("Id to select: $idToSelect");
+    print("Id to deselect: $idToDeselect");
     await AccountDbHelper.instance.selectAccount(idToSelect, idToDeselect);
-    fetchData();
+    await fetchData();
   }
 
-  deleteAccount(int accountId)async{
-    if(_selectedAccountId == accountId){
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Cannot delete selected account\nSelect another account and delete this")));
-    }
-    else{
+  deleteAccount(int accountId) async {
+    if (_selectedAccountId == accountId) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(
+              "Cannot delete selected account\nSelect another account and delete this")));
+    } else {
       await AccountDbHelper.instance.deleteAccount(accountId);
       fetchData();
     }
@@ -47,48 +50,46 @@ class _AccountPageState extends State<AccountPage> {
       appBar: AppBar(
         title: Text("Accounts"),
         actions: [
-          IconButton(onPressed: (){
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => AddEditAccountsPage(),
-                ));
-          }, icon: Icon(Icons.add))
+          IconButton(
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => AddEditAccountsPage(),
+                    ));
+              },
+              icon: Icon(Icons.add))
         ],
       ),
       body: ListView.builder(
         itemCount: _accountModelList.length,
         itemBuilder: (context, index) {
+          AccountModel accountModel = _accountModelList[index];
           return GestureDetector(
-            onTap: (){
+            onTap: () {
               //Edit
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => AddEditAccountsPage(existingAccountModel: _accountModelList[index]),
+                    builder: (context) => AddEditAccountsPage(
+                        existingAccountModel: accountModel),
                   ));
             },
             onDoubleTap: () {
-              if (_selectedAccountId != (index + 1)) {
-                selectAccount(index + 1,_selectedAccountId);
+              if (_selectedAccountId != accountModel.id) {
+                selectAccount(accountModel.id!, _selectedAccountId);
               }
             },
-            onLongPress: (){
+            onLongPress: () {
               //Delete account
-              deleteAccount(_accountModelList[index].id!);
+              deleteAccount(accountModel.id!);
             },
             child: ListTile(
-                title: Text(_accountModelList[index].accountName),
+                title: Text(accountModel.accountName),
                 subtitle: Text(
-                    "${_accountModelList[index].currency} ${_accountModelList[index].currentBalance}"),
-                trailing: _accountModelList[index].isSelected
-                    ? Chip(
-                        label: Icon(
-                          Icons.check,
-                          color: Colors.green,
-                        ),
-                        backgroundColor: Colors.greenAccent,
-                      )
+                    "${accountModel.currency} ${accountModel.currentBalance}"),
+                trailing: accountModel.isSelected
+                    ? Chip(label: Text("SELECTED"), labelStyle: TextStyle(color: Colors.white), backgroundColor: const Color(0xFF1C2536),)
                     : Container(
                         width: 1,
                         height: 1,

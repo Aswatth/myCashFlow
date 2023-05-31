@@ -36,7 +36,7 @@ class _AddEditAccountsPageState extends State<AddEditAccountsPage> {
         }
         else{
           //Clearing navigation stack and navigating to home page
-          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_) => BasePage(pageIndex: 0,)), (route)=>false);
+          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_) => BasePage(pageIndex: 3)), (route)=>false);
         }
       });
     }
