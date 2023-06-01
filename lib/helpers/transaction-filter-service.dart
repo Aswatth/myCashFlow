@@ -1,6 +1,6 @@
 import 'package:intl/intl.dart';
 import 'package:my_cash_flow/helpers/globals.dart';
-import 'package:my_cash_flow/models/transactionFilter-model.dart';
+import 'package:my_cash_flow/models/transaction-filter-model.dart';
 
 import '../models/transaction-model.dart';
 
@@ -20,18 +20,13 @@ class TransactionFilterService{
     //Filter for dates
     filteredOnDateData = transactionList.where((element){
       if(transactionFilterModel.startDate != null && transactionFilterModel.endDate != null){
-        DateTime startDate = DateFormatter.parse(transactionFilterModel.startDate!);
-        DateTime endDate = DateFormatter.parse(transactionFilterModel.endDate!);
-
-        return (startDate.compareTo(element.transactionDate!) <= 0 )&& (endDate.compareTo(element.transactionDate!) >= 0 );
+        return (transactionFilterModel.startDate!.compareTo(element.transactionDate!) <= 0 )&& (transactionFilterModel.endDate!.compareTo(element.transactionDate!) >= 0 );
       }
       else if(transactionFilterModel.startDate != null){
-        DateTime startDate = DateTime.parse(transactionFilterModel.startDate!);
-        return (startDate.compareTo(element.transactionDate!) <= 0);
+        return (transactionFilterModel.startDate!.compareTo(element.transactionDate!) <= 0);
       }
       else if(transactionFilterModel.endDate != null){
-        DateTime endDate = DateTime.parse(transactionFilterModel.endDate!);
-        return (endDate.compareTo(element.transactionDate!) >=0);
+        return (transactionFilterModel.endDate!.compareTo(element.transactionDate!) >=0);
       }
       return true;
     }).toList();

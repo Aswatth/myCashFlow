@@ -1,8 +1,9 @@
+import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:my_cash_flow/helpers/transaction-filter-service.dart';
 import 'package:my_cash_flow/models/transaction-model.dart';
-import 'package:my_cash_flow/models/transactionFilter-model.dart';
+import 'package:my_cash_flow/models/transaction-filter-model.dart';
 import 'package:my_cash_flow/models/transactionTypeEnum.dart';
 import 'package:my_cash_flow/pages/add-edit-transaction-page.dart';
 
@@ -27,15 +28,10 @@ class _TransactionPageState extends State<TransactionPage> {
   bool hasFilters = false;
   List<bool> _isSelected = [];
 
-  String? _selectedStartMonth;
-  String? _selectedEndMonth;
-
   TransactionType? _selectedTransactionType;
 
   TextEditingController startDateController = TextEditingController();
-  TextEditingController startYearController = TextEditingController();
   TextEditingController endDateController = TextEditingController();
-  TextEditingController endYearController = TextEditingController();
 
   TextEditingController minAmountController = TextEditingController();
   TextEditingController maxAmountController = TextEditingController();
@@ -78,12 +74,13 @@ class _TransactionPageState extends State<TransactionPage> {
   }
 
   deleteTransaction(TransactionModel transactionModel) async {
-    if(transactionModel.id != null){
-      if(transactionModel.transactionType == TransactionType.CREDIT){
-        await AccountDbHelper.instance.updateCurrentBalance(-transactionModel.amount!);
-      }
-      else{
-        await AccountDbHelper.instance.updateCurrentBalance(transactionModel.amount!);
+    if (transactionModel.id != null) {
+      if (transactionModel.transactionType == TransactionType.CREDIT) {
+        await AccountDbHelper.instance
+            .updateCurrentBalance(-transactionModel.amount!);
+      } else {
+        await AccountDbHelper.instance
+            .updateCurrentBalance(transactionModel.amount!);
       }
     }
     await TransactionDbHelper.instance.delete(transactionModel.id!);
@@ -91,14 +88,12 @@ class _TransactionPageState extends State<TransactionPage> {
   }
 
   applyFilters() async {
-    if (startDateController.text.isNotEmpty &&
-        _selectedStartMonth != null &&
-        startYearController.text.isNotEmpty) {
+    if (startDateController.text.isNotEmpty) {
       transactionFilterModel.startDate =
-          "${startDateController.text}-$_selectedStartMonth-${startYearController.text}";
+          DateTime.parse(startDateController.text);
     }
-    if (endDateController.text.isNotEmpty && _selectedEndMonth != null && endYearController.text.isNotEmpty) {
-      transactionFilterModel.endDate = "${endDateController.text}-$_selectedEndMonth-${endYearController.text}";
+    if (endDateController.text.isNotEmpty) {
+      transactionFilterModel.endDate = DateTime.parse(endDateController.text);
     }
     transactionFilterModel.selectedCategories = categoryList
         .where((element) => _isSelected[categoryList.indexOf(element)])
@@ -117,7 +112,6 @@ class _TransactionPageState extends State<TransactionPage> {
   }
 
   clearFilters() {
-
     setState(() {
       transactionFilterModel.startDate = null;
       transactionFilterModel.endDate = null;
@@ -127,19 +121,13 @@ class _TransactionPageState extends State<TransactionPage> {
       transactionFilterModel.transactionType = null;
 
       _selectedTransactionType = null;
-      _selectedStartMonth = null;
-      _selectedEndMonth = null;
       startDateController.text = "";
-      startYearController.text = "";
       endDateController.text = "";
-      endYearController.text = "";
 
       minAmountController.text = "";
       maxAmountController.text = "";
 
       _isSelected = List.generate(categoryList.length, (index) => false);
-
-      hasFilters = false;
     });
 
     getTransactions();
@@ -156,148 +144,170 @@ class _TransactionPageState extends State<TransactionPage> {
         ExpansionPanel(
             headerBuilder: (context, isExpanded) {
               return ListTile(
-                leading: hasFilters?Icon(Icons.filter_alt,color: const Color(0xFF1C2536),):Icon(Icons.filter_alt_off),
+                leading: hasFilters
+                    ? Icon(
+                        Icons.filter_alt,
+                        color: const Color(0xFF1C2536),
+                      )
+                    : Icon(Icons.filter_alt_off),
                 title: Text("Filter"),
               );
             },
             body: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                ListTile(
-                  leading: Text("Start date"),
-                  title: Row(children: [
-                    Expanded(
-                      child: TextField(
-                        controller: startDateController,
-                        decoration: InputDecoration(
-                            label: Center(child: Text("Day")), hintText: "DD"),
-                        onSubmitted: (value){
-                          setState(() {
-                            startDateController.text = value;
-                          });
-                        },
-                      ),
+                DateTimePicker(
+                  controller: startDateController,
+                  decoration: const InputDecoration(
+                    hintText: "Start date",
+                    label: Text("Start date"),
+                    labelStyle: TextStyle(
+                      color: Color(0xFF1C2536),
                     ),
-                    Text("/"),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: DropdownButton(
-                        value: _selectedStartMonth,
-                        hint: Text("Month"),
-                        items: Months.map<DropdownMenuItem<String>>((e) {
-                          return DropdownMenuItem(
-                            child: Text(e),
-                            value: e,
-                          );
-                        }).toList(),
-                        onChanged: (value) {
-                          setState(() {
-                            _selectedStartMonth = value as String?;
-                          });
-                        },
-                      ),
+                    prefixIcon: Icon(
+                      Icons.calendar_today,
+                      color: Color(0xFF1C2536),
                     ),
-                    Text("/"),
-                    Expanded(
-                      child: TextField(
-                        controller: startYearController,
-                        decoration: InputDecoration(
-                            label: Center(child: Text("Year")),
-                            hintText: "YYYY"),
-                        onSubmitted: (value) {
-                          setState(() {
-                            startYearController.text = value;
-                          });
-                        },
-                      ),
-                    ),
-                  ]),
-                ),
-                ListTile(
-                  leading: Text("End date"),
-                  title: Row(children: [
-                    Expanded(
-                      child: TextField(
-                        controller: endDateController,
-                        decoration: InputDecoration(
-                            label: Center(child: Text("Day")), hintText: "DD"),
-                        onSubmitted: (value) {
-                          setState(() {
-                            endDateController.text = value;
-                          });
-                        },
-                      ),
-                    ),
-                    Text("/"),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: DropdownButton(
-                        value: _selectedEndMonth,
-                        hint: Text("Month"),
-                        items: Months.map<DropdownMenuItem<String>>((e) {
-                          return DropdownMenuItem(
-                            child: Text(e),
-                            value: e,
-                          );
-                        }).toList(),
-                        onChanged: (value) {
-                          setState(() {
-                            _selectedEndMonth = value as String?;
-                          });
-                        },
-                      ),
-                    ),
-                    Text("/"),
-                    Expanded(
-                      child: TextField(
-                        controller: endYearController,
-                        decoration: InputDecoration(
-                            label: Center(child: Text("Year")),
-                            hintText: "YYYY"),
-                        onSubmitted: (value) {
-                          setState(() {
-                            endYearController.text = value;
-                          });
-                        },
-                      ),
-                    ),
-                  ]),
-                ),
-                ListTile(
-                  leading: Text("Min. Amount"),
-                  title: TextField(
-                    controller: minAmountController,
-                    keyboardType: TextInputType.number,
-                    onChanged: (value) {
-                      setState(() {
-                        minAmountController.text = value;
-                        minAmountController.selection = TextSelection.collapsed(offset: minAmountController.text.length);
-
-                        transactionFilterModel.minAmount =
-                            double.tryParse(value);
-                      });
-                    },
+                    enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                        borderSide: BorderSide(
+                          color: Color(0xFF1C2536),
+                        )),
+                    focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                        borderSide: BorderSide(
+                          color: Color(0xFF1C2536),
+                        )),
                   ),
+                  firstDate: DateTime(1990),
+                  lastDate: DateTime(2100),
+                  onChanged: (String? _) {
+                    setState(() {
+                      startDateController.text = _!;
+                    });
+                  },
                 ),
-                ListTile(
-                  leading: Text("Max. Amount"),
-                  title: TextField(
-                    controller: maxAmountController,
-                    keyboardType: TextInputType.number,
-                    onSubmitted: (value) {
-                      setState(() {
-                        maxAmountController.text = value;
-                        maxAmountController.selection = TextSelection.collapsed(offset: maxAmountController.text.length);
-
-                        transactionFilterModel.maxAmount =
-                            double.tryParse(value);
-                      });
-                    },
+                DateTimePicker(
+                  controller: endDateController,
+                  decoration: const InputDecoration(
+                    hintText: "End date",
+                    label: Text("End date"),
+                    labelStyle: TextStyle(
+                      color: Color(0xFF1C2536),
+                    ),
+                    prefixIcon: Icon(
+                      Icons.calendar_today,
+                      color: Color(0xFF1C2536),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                        borderSide: BorderSide(
+                          color: Color(0xFF1C2536),
+                        )),
+                    focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                        borderSide: BorderSide(
+                          color: Color(0xFF1C2536),
+                        )),
                   ),
+                  firstDate: DateTime(1990),
+                  lastDate: DateTime(2100),
+                  onChanged: (String? _) {
+                    setState(() {
+                      endDateController.text = _!;
+                    });
+                  },
+                ),
+                TextFormField(
+                  //key: _formKey,
+                  controller: minAmountController,
+                  keyboardType: TextInputType.number,
+                  decoration: const InputDecoration(
+                    hintText: "Minimum amount",
+                    label: Text("Minimum amount"),
+                    labelStyle: TextStyle(
+                      color: const Color(0xFF1C2536),
+                    ),
+                    prefixIcon: Icon(
+                      Icons.currency_exchange,
+                      color: const Color(0xFF1C2536),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                        borderSide: BorderSide(
+                          color: Color(0xFF1C2536),
+                        )),
+                    focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                        borderSide: BorderSide(
+                          color: Color(0xFF1C2536),
+                        )),
+                  ),
+                  validator: (String? value) {
+                    if (value == null || value.isEmpty) {
+                      return "Amount cannot be empty";
+                    }
+                    return null;
+                  },
+                  onChanged: (_) {
+                    minAmountController.text = _ == ""
+                        ? ""
+                        : NumberFormatter.format(
+                            double.parse(_.replaceAll(",", "")));
+                    minAmountController.selection = TextSelection.collapsed(
+                        offset: minAmountController.text.length);
+                  },
+                ),
+                TextFormField(
+                  //key: _formKey,
+                  controller: maxAmountController,
+                  keyboardType: TextInputType.number,
+                  decoration: const InputDecoration(
+                    hintText: "Maximum amount",
+                    label: Text("Maximum amount"),
+                    labelStyle: TextStyle(
+                      color: const Color(0xFF1C2536),
+                    ),
+                    prefixIcon: Icon(
+                      Icons.currency_exchange,
+                      color: const Color(0xFF1C2536),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                        borderSide: BorderSide(
+                          color: Color(0xFF1C2536),
+                        )),
+                    focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                        borderSide: BorderSide(
+                          color: Color(0xFF1C2536),
+                        )),
+                  ),
+                  validator: (String? value) {
+                    if (value == null || value.isEmpty) {
+                      return "Amount cannot be empty";
+                    }
+                    return null;
+                  },
+                  onChanged: (_) {
+                    maxAmountController.text = _ == ""
+                        ? ""
+                        : NumberFormatter.format(
+                            double.parse(_.replaceAll(",", "")));
+                    maxAmountController.selection = TextSelection.collapsed(
+                        offset: maxAmountController.text.length);
+                  },
                 ),
                 ListTile(
-                  leading: Text("Categories"),
-                  subtitle: Wrap(
+                  shape: RoundedRectangleBorder(
+                      side: BorderSide(width: 1),
+                      borderRadius: BorderRadius.circular(20.0)),
+                  title: Text("Categories"),
+                  subtitle: GridView.count(
+                    crossAxisCount: 3,
+                    physics: NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    childAspectRatio: 2,
                     children: categoryList
                         .map((e) => FilterChip(
                               label: Text(e.name),
@@ -331,24 +341,24 @@ class _TransactionPageState extends State<TransactionPage> {
                               TransactionType.CREDIT,
                           onChanged: (bool? value) {
                             setState(() {
-                              if(value!){
-                                _selectedTransactionType = TransactionType.CREDIT;
-                              }
-                              else{
+                              if (value!) {
+                                _selectedTransactionType =
+                                    TransactionType.CREDIT;
+                              } else {
                                 _selectedTransactionType = null;
                               }
                             });
                           }),
                       const Text("CREDIT"),
                       Checkbox(
-                          value: _selectedTransactionType ==
-                              TransactionType.DEBIT,
+                          value:
+                              _selectedTransactionType == TransactionType.DEBIT,
                           onChanged: (bool? value) {
                             setState(() {
-                              if(value!){
-                                _selectedTransactionType = TransactionType.DEBIT;
-                              }
-                              else{
+                              if (value!) {
+                                _selectedTransactionType =
+                                    TransactionType.DEBIT;
+                              } else {
                                 _selectedTransactionType = null;
                               }
                             });
@@ -439,7 +449,8 @@ class _TransactionPageState extends State<TransactionPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    DateFormatter.format(transactionModel.transactionDate!).toString(),
+                    DateFormatter.format(transactionModel.transactionDate!)
+                        .toString(),
                     style: TextStyle(fontWeight: FontWeight.w900),
                   ),
                   Text(
@@ -455,11 +466,13 @@ class _TransactionPageState extends State<TransactionPage> {
                 ),
                 backgroundColor: const Color(0xFF1C2536),
               ),
-              onTap: (){
+              onTap: () {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => Add_EditTransactionPage(existingTransactionModel: transactionModel,),
+                      builder: (context) => Add_EditTransactionPage(
+                        existingTransactionModel: transactionModel,
+                      ),
                     ));
               },
               onLongPress: () {
@@ -506,14 +519,17 @@ class _TransactionPageState extends State<TransactionPage> {
             IconButton(
                 onPressed: () {
                   AccountDbHelper.instance.getSelectedAccountId().then((value) {
-                    if(value == 0){
-                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("No account found!"),));
-                    }
-                    else{
+                    if (value == 0) {
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        content: Text("No account found!"),
+                      ));
+                    } else {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => Add_EditTransactionPage(existingTransactionModel: null,),
+                            builder: (context) => Add_EditTransactionPage(
+                              existingTransactionModel: null,
+                            ),
                           ));
                     }
                   });
