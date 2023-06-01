@@ -12,24 +12,24 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final TextEditingController _passwordEditingController = TextEditingController();
+  final TextEditingController _passwordEditingController =
+      TextEditingController();
 
   Future<PasswordResult> checkPassword() async {
     String password = _passwordEditingController.text;
-    print("Typed password: "+password);
+    print("Typed password: " + password);
     if (password.length >= 4 && password.length <= 16) {
       //Check is password already exists -> Whether it is new user or returning user
       bool isNewUser = await PasswordDbHelper.instance.checkIfNewUser();
-      if(isNewUser){
+      if (isNewUser) {
         await PasswordDbHelper.instance.setPassword(password);
         return PasswordResult.SIGNUP;
-      }
-      else {
-        bool validationResult = await PasswordDbHelper.instance.validatePassword(password);
-        if(validationResult){
+      } else {
+        bool validationResult =
+            await PasswordDbHelper.instance.validatePassword(password);
+        if (validationResult) {
           return PasswordResult.LOGIN;
-        }
-        else{
+        } else {
           return PasswordResult.INCORRECT_PASSWORD;
         }
       }
@@ -72,7 +72,7 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ),
           ),
-          onChanged: (value){
+          onChanged: (value) {
             setState(() {
               _passwordEditingController.text = value;
             });
@@ -90,39 +90,46 @@ class _LoginPageState extends State<LoginPage> {
             ),
             onPressed: () {
               checkPassword().then((value) {
-                    switch(value){
-                    case PasswordResult.SIGNUP: {
+                switch (value) {
+                  case PasswordResult.SIGNUP:
+                    {
                       Navigator.pushAndRemoveUntil(
                           context,
                           MaterialPageRoute(
                             builder: (context) => AddEditAccountsPage(),
                           ),
-                              (route) => false);
+                          (route) => false);
                     }
                     break;
-                      case PasswordResult.LOGIN: {
-                        Navigator.pushAndRemoveUntil(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => BasePage(pageIndex: 0),
-                            ),
-                                (route) => false);
-                      }
-                      break;
-                    case PasswordResult.INCORRECT_PASSWORD: {
+                  case PasswordResult.LOGIN:
+                    {
+                      Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => BasePage(pageIndex: 0),
+                          ),
+                          (route) => false);
+                    }
+                    break;
+                  case PasswordResult.INCORRECT_PASSWORD:
+                    {
                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                         content: Text("Incorrect password"),
+                        duration: Duration(seconds: 1),
                       ));
                     }
                     break;
-                    case PasswordResult.INVALID_PASSWORD: {
+                  case PasswordResult.INVALID_PASSWORD:
+                    {
                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                        content: Text("Password length should be at least 4 characters"),
+                        content: Text(
+                            "Password length should be at least 4 characters"),
+                        duration: Duration(seconds: 1),
                       ));
                     }
                     break;
-    }
-                  });
+                }
+              });
             },
           ),
         )

@@ -30,8 +30,10 @@ class _AccountPageState extends State<AccountPage> {
   deleteAccount(int accountId) async {
     if (_selectedAccountId == accountId) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text(
-              "Cannot delete selected account\nSelect another account and delete this")));
+        content: Text(
+            "Cannot delete selected account\nSelect another account before deleting this"),
+        duration: Duration(seconds: 2),
+      ));
     } else {
       await AccountDbHelper.instance.deleteAccount(accountId);
       fetchData();
@@ -71,8 +73,8 @@ class _AccountPageState extends State<AccountPage> {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => AddEditAccountsPage(
-                        existingAccountModel: accountModel),
+                    builder: (context) =>
+                        AddEditAccountsPage(existingAccountModel: accountModel),
                   ));
             },
             onDoubleTap: () {
@@ -89,7 +91,11 @@ class _AccountPageState extends State<AccountPage> {
                 subtitle: Text(
                     "${accountModel.currency} ${accountModel.currentBalance}"),
                 trailing: accountModel.isSelected
-                    ? Chip(label: Text("SELECTED"), labelStyle: TextStyle(color: Colors.white), backgroundColor: const Color(0xFF1C2536),)
+                    ? Chip(
+                        label: Text("SELECTED"),
+                        labelStyle: TextStyle(color: Colors.white),
+                        backgroundColor: const Color(0xFF1C2536),
+                      )
                     : Container(
                         width: 1,
                         height: 1,
