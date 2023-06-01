@@ -141,7 +141,6 @@ class _AddEditAccountsPageState extends State<AddEditAccountsPage> {
                 ),
                 TextFormField(
                   controller: _currencyController,
-                  keyboardType: TextInputType.number,
                   decoration: const InputDecoration(
                     hintText: "Enter currency to use",
                     prefixIcon: Icon(Icons.currency_exchange,color: Color(0xFF1C2536),),
