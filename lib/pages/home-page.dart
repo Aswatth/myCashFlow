@@ -53,75 +53,80 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Column(
-        children: [
-          Card(
-            color: const Color(0xFF1C2536),
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    "Total balance:",
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  Text(
-                    "${account.currency} ${NumberFormatter.format(account.currentBalance)}",
-                    style: const TextStyle(color: Colors.white, fontSize: 25),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Row(
-                        children: [
-                          Icon(
-                            Icons.arrow_circle_up,
-                            color: Colors.greenAccent,
-                          ),
-                          Text(
-                            "${account.currency} ${NumberFormatter.format(creditedAmount)}",
-                            style: TextStyle(color: Colors.white),
-                          ),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          Icon(
-                            Icons.arrow_circle_down,
-                            color: Colors.redAccent,
-                          ),
-                          Text(
-                            "${account.currency} ${NumberFormatter.format(debitedAmount)}",
-                            style: TextStyle(color: Colors.white),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ]
-                    .map((e) => Padding(
-                          padding: const EdgeInsets.all(10.0),
-                          child: e,
-                        ))
-                    .toList(),
-              ),
-            ),
-          ),
-          Expanded(
-            flex: 2,
-            child: Card(
-              color: Color(0xFF1C2536),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Center(child: Text("Home page")),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: [
+            Card(
+              color: const Color(0xFF1C2536),
               child: Center(
-                child: Stack(
-                    alignment: Alignment.center,
-                    children: [Text("Expenses",style: TextStyle(color: Colors.white),), ExpenseChart()]),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      "Total balance:",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    Text(
+                      "${account.currency} ${NumberFormatter.format(account.currentBalance)}",
+                      style: const TextStyle(color: Colors.white, fontSize: 25),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.arrow_circle_up,
+                              color: Colors.greenAccent,
+                            ),
+                            Text(
+                              "${account.currency} ${NumberFormatter.format(creditedAmount)}",
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.arrow_circle_down,
+                              color: Colors.redAccent,
+                            ),
+                            Text(
+                              "${account.currency} ${NumberFormatter.format(debitedAmount)}",
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ]
+                      .map((e) => Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: e,
+                          ))
+                      .toList(),
+                ),
               ),
             ),
-          )
-        ], //.map((e) => Padding(padding: const EdgeInsets.all(10.0),child: e,)).toList(),
+            Expanded(
+              flex: 2,
+              child: Card(
+                color: Color(0xFF1C2536),
+                child: Center(
+                  child: Stack(
+                      alignment: Alignment.center,
+                      children: [Text("Expenses",style: TextStyle(color: Colors.white),), ExpenseChart()]),
+                ),
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
