@@ -330,22 +330,28 @@ class _TransactionPageState extends State<TransactionPage> {
                           value: _selectedTransactionType ==
                               TransactionType.CREDIT,
                           onChanged: (bool? value) {
-                            if (value!) {
-                              setState(() {
+                            setState(() {
+                              if(value!){
                                 _selectedTransactionType = TransactionType.CREDIT;
-                              });
-                            }
+                              }
+                              else{
+                                _selectedTransactionType = null;
+                              }
+                            });
                           }),
-                      Text("CREDIT"),
+                      const Text("CREDIT"),
                       Checkbox(
                           value: _selectedTransactionType ==
                               TransactionType.DEBIT,
                           onChanged: (bool? value) {
-                            if (value!) {
-                              setState(() {
+                            setState(() {
+                              if(value!){
                                 _selectedTransactionType = TransactionType.DEBIT;
-                              });
-                            }
+                              }
+                              else{
+                                _selectedTransactionType = null;
+                              }
+                            });
                           }),
                       Text("DEBIT"),
                     ],
