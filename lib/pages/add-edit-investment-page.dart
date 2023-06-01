@@ -69,6 +69,7 @@ class _AddEditInvestmentPageState extends State<AddEditInvestmentPage> {
         children: [
           TextField(
             controller: _investmentNameController,
+            maxLength: 15,
             decoration: const InputDecoration(
               hintText: "Investment name",
               prefixIcon: Icon(Icons.savings, color: const Color(0xFF1C2536),),

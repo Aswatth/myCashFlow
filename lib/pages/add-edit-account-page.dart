@@ -63,11 +63,12 @@ class _AddEditAccountsPageState extends State<AddEditAccountsPage> {
       body: Center(
           child: Form(
             key: _formKey,
-            child: Column(
+            child: ListView(
               //mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 TextFormField(
                   controller: _accountNameController,
+                  maxLength: 15,
                   decoration: const InputDecoration(
                     hintText: "Enter account name",
                     prefixIcon: Icon(Icons.account_balance, color: Color(0xFF1C2536),),
@@ -141,6 +142,7 @@ class _AddEditAccountsPageState extends State<AddEditAccountsPage> {
                 ),
                 TextFormField(
                   controller: _currencyController,
+                  maxLength: 3,
                   decoration: const InputDecoration(
                     hintText: "Enter currency to use",
                     prefixIcon: Icon(Icons.currency_exchange,color: Color(0xFF1C2536),),

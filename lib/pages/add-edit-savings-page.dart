@@ -64,6 +64,7 @@ class _AddEditSavingsPageState extends State<AddEditSavingsPage> {
           children: [
             TextField(
               controller: _savingNameController,
+              maxLength: 15,
               decoration: const InputDecoration(
                 hintText: "Saving name",
                 prefixIcon: Icon(Icons.savings,color: const Color(0xFF1C2536),),
