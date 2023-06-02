@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_cash_flow/helpers/globals.dart';
 import 'package:my_cash_flow/pages/add-edit-account-page.dart';
 
 import '../models/account-model.dart';
@@ -89,7 +90,7 @@ class _AccountPageState extends State<AccountPage> {
             child: ListTile(
                 title: Text(accountModel.accountName),
                 subtitle: Text(
-                    "${accountModel.currency} ${accountModel.currentBalance}"),
+                    "${accountModel.currency} ${NumberFormatter.format(accountModel.currentBalance)}"),
                 trailing: accountModel.isSelected
                     ? Chip(
                         label: Text("SELECTED"),
