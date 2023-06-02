@@ -15,6 +15,8 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _passwordEditingController =
       TextEditingController();
 
+  bool hidePassword = true;
+
   Future<PasswordResult> checkPassword(String password) async {
     if (password.length >= 4 && password.length <= 16) {
       //Check is password already exists -> Whether it is new user or returning user
@@ -52,16 +54,24 @@ class _LoginPageState extends State<LoginPage> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           TextFormField(
-            obscureText: true,
+            obscureText: hidePassword,
             autocorrect: false,
             maxLength: 16,
             enableSuggestions: false,
-            decoration: const InputDecoration(
-              hintText: "Enter your password",
+            decoration: InputDecoration(
+              label: Text("Enter your password", style: TextStyle(color: const Color(0xFF1C2536)),),
               hintMaxLines: 16,
               prefixIcon: Icon(
                 Icons.key,
                 color: Color(0xFF1C2536),
+              ),
+              suffix: IconButton(
+                onPressed: (){
+                  setState(() {
+                    hidePassword = !hidePassword;
+                  });
+                },
+                icon: Icon(hidePassword? Icons.visibility_off:Icons.visibility,color: const Color(0xFF1C2536),),
               ),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.all(Radius.circular(20.0)),
