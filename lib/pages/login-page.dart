@@ -15,9 +15,7 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _passwordEditingController =
       TextEditingController();
 
-  Future<PasswordResult> checkPassword() async {
-    String password = _passwordEditingController.text;
-    print("Typed password: " + password);
+  Future<PasswordResult> checkPassword(String password) async {
     if (password.length >= 4 && password.length <= 16) {
       //Check is password already exists -> Whether it is new user or returning user
       bool isNewUser = await PasswordDbHelper.instance.checkIfNewUser();
@@ -35,61 +33,66 @@ class _LoginPageState extends State<LoginPage> {
       }
     }
     return PasswordResult.INVALID_PASSWORD;
+    
   }
+
+  late final GlobalKey<FormState> formKey;
 
   @override
   void initState() {
     super.initState();
+    formKey = GlobalKey<FormState>();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        TextFormField(
-          obscureText: true,
-          autocorrect: false,
-          maxLength: 16,
-          enableSuggestions: false,
-          decoration: const InputDecoration(
-            hintText: "Enter your password",
-            hintMaxLines: 16,
-            prefixIcon: Icon(
-              Icons.key,
-              color: Color(0xFF1C2536),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.all(Radius.circular(20.0)),
-              borderSide: BorderSide(
+    return Form(
+      key: formKey,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          TextFormField(
+            obscureText: true,
+            autocorrect: false,
+            maxLength: 16,
+            enableSuggestions: false,
+            decoration: const InputDecoration(
+              hintText: "Enter your password",
+              hintMaxLines: 16,
+              prefixIcon: Icon(
+                Icons.key,
                 color: Color(0xFF1C2536),
               ),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.all(Radius.circular(20.0)),
-              borderSide: BorderSide(
-                color: Color(0xFF1C2536),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                borderSide: BorderSide(
+                  color: Color(0xFF1C2536),
+                ),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                borderSide: BorderSide(
+                  color: Color(0xFF1C2536),
+                ),
               ),
             ),
-          ),
-          onChanged: (value) {
-            setState(() {
-              _passwordEditingController.text = value;
-            });
-          },
-        ),
-        Container(
-          width: double.infinity,
-          decoration: BoxDecoration(
-              color: const Color(0xFF1C2536),
-              borderRadius: BorderRadius.circular(20.0)),
-          child: TextButton(
-            child: const Text(
-              "Log in",
-              style: TextStyle(color: Colors.white),
-            ),
-            onPressed: () {
-              checkPassword().then((value) {
+            validator: (value){
+              if(value == null || value.isEmpty) {
+                return "Password cannot be empty";
+              }
+              if(value.length < 4){
+                return "Password should be at least 4 characters";
+              }
+              return null;
+            },
+            onChanged: (value) {
+              setState(() {
+                _passwordEditingController.text = value;
+                _passwordEditingController.selection = TextSelection.collapsed(offset: _passwordEditingController.text.length);
+              });
+            },
+            onSaved: (value){
+              checkPassword(value!).then((value) {
                 switch (value) {
                   case PasswordResult.SIGNUP:
                     {
@@ -98,7 +101,7 @@ class _LoginPageState extends State<LoginPage> {
                           MaterialPageRoute(
                             builder: (context) => AddEditAccountsPage(),
                           ),
-                          (route) => false);
+                              (route) => false);
                     }
                     break;
                   case PasswordResult.LOGIN:
@@ -108,7 +111,7 @@ class _LoginPageState extends State<LoginPage> {
                           MaterialPageRoute(
                             builder: (context) => BasePage(pageIndex: 0),
                           ),
-                          (route) => false);
+                              (route) => false);
                     }
                     break;
                   case PasswordResult.INCORRECT_PASSWORD:
@@ -119,26 +122,35 @@ class _LoginPageState extends State<LoginPage> {
                       ));
                     }
                     break;
-                  case PasswordResult.INVALID_PASSWORD:
-                    {
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                        content: Text(
-                            "Password length should be at least 4 characters"),
-                        duration: Duration(seconds: 1),
-                      ));
-                    }
-                    break;
                 }
               });
             },
           ),
-        )
-      ]
-          .map((e) => Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: e,
-              ))
-          .toList(),
+          Container(
+            width: double.infinity,
+            decoration: BoxDecoration(
+                color: const Color(0xFF1C2536),
+                borderRadius: BorderRadius.circular(20.0)),
+            child: TextButton(
+              child: const Text(
+                "Log in",
+                style: TextStyle(color: Colors.white),
+              ),
+              onPressed: () {
+                checkPassword(_passwordEditingController.text);
+                if(formKey.currentState!.validate()){
+                  formKey.currentState!.save();
+                }
+              },
+            ),
+          )
+        ]
+            .map((e) => Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: e,
+                ))
+            .toList(),
+      ),
     );
   }
 }

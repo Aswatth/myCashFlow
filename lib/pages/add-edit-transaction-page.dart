@@ -16,7 +16,8 @@ class Add_EditTransactionPage extends StatefulWidget {
       : super(key: key);
 
   @override
-  _Add_EditTransactionPageState createState() => _Add_EditTransactionPageState();
+  _Add_EditTransactionPageState createState() =>
+      _Add_EditTransactionPageState();
 }
 
 class _Add_EditTransactionPageState extends State<Add_EditTransactionPage> {
@@ -24,11 +25,12 @@ class _Add_EditTransactionPageState extends State<Add_EditTransactionPage> {
 
   TransactionModel transactionModel = TransactionModel();
 
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  late GlobalKey<FormState> formKey;
 
   TextEditingController _transactionDateController = TextEditingController();
   TextEditingController _transactionAmountController = TextEditingController();
-  TextEditingController _transactionCommentsController = TextEditingController();
+  TextEditingController _transactionCommentsController =
+      TextEditingController();
 
   List<bool> _isSelectedList = [];
 
@@ -42,18 +44,15 @@ class _Add_EditTransactionPageState extends State<Add_EditTransactionPage> {
         await AccountDbHelper.instance.getSelectedAccountId();
 
     //Reverting old transaction changes to current balance
-    if(transactionModel.id != null){
-      if(transactionModel.transactionType == TransactionType.CREDIT){
-        await AccountDbHelper.instance.updateCurrentBalance(-transactionModel.amount!);
-      }
-      else{
-        await AccountDbHelper.instance.updateCurrentBalance(transactionModel.amount!);
+    if (transactionModel.id != null) {
+      if (transactionModel.transactionType == TransactionType.CREDIT) {
+        await AccountDbHelper.instance
+            .updateCurrentBalance(-transactionModel.amount!);
+      } else {
+        await AccountDbHelper.instance
+            .updateCurrentBalance(transactionModel.amount!);
       }
     }
-
-    transactionModel.transactionDate = DateTime.parse(_transactionDateController.text);
-    transactionModel.amount = double.parse(_transactionAmountController.text.replaceAll(",", ""));
-    transactionModel.comments = _transactionCommentsController.text;
 
     transactionModel.transactionType = _selectedTransactionType;
 
@@ -63,11 +62,12 @@ class _Add_EditTransactionPageState extends State<Add_EditTransactionPage> {
     transactionModel.accountId = selectedAccountId;
 
     //Updating current balance with new/updated transaction
-    if(transactionModel.transactionType == TransactionType.CREDIT){
-      await AccountDbHelper.instance.updateCurrentBalance(transactionModel.amount!);
-    }
-    else{
-      await AccountDbHelper.instance.updateCurrentBalance(-transactionModel.amount!);
+    if (transactionModel.transactionType == TransactionType.CREDIT) {
+      await AccountDbHelper.instance
+          .updateCurrentBalance(transactionModel.amount!);
+    } else {
+      await AccountDbHelper.instance
+          .updateCurrentBalance(-transactionModel.amount!);
     }
 
     //print(transactionModel.toJson());
@@ -96,19 +96,23 @@ class _Add_EditTransactionPageState extends State<Add_EditTransactionPage> {
   void initState() {
     super.initState();
 
+    formKey = GlobalKey<FormState>();
+
     _isSelectedList = List.generate(categoryList.length, (index) => false);
 
     if (widget.existingTransactionModel != null) {
       transactionModel = widget.existingTransactionModel!;
 
-      _transactionDateController.text = transactionModel.transactionDate.toString();
-      _transactionAmountController.text = NumberFormatter.format(transactionModel.amount);
+      _transactionDateController.text =
+          transactionModel.transactionDate.toString();
+      _transactionAmountController.text =
+          NumberFormatter.format(transactionModel.amount);
       _transactionCommentsController.text = transactionModel.comments;
 
       _selectedTransactionType = transactionModel.transactionType!;
 
-      for(int i = 0; i < categoryList.length; ++i){
-        if(categoryList[i].name == transactionModel.category){
+      for (int i = 0; i < categoryList.length; ++i) {
+        if (categoryList[i].name == transactionModel.category) {
           _currentSelectedIndex = i;
           _prevSelectedIndex = i;
           _isSelectedList[_currentSelectedIndex] = true;
@@ -117,8 +121,7 @@ class _Add_EditTransactionPageState extends State<Add_EditTransactionPage> {
       }
 
       title = "Edit transaction";
-    }
-    else{
+    } else {
       transactionModel = TransactionModel();
     }
   }
@@ -149,222 +152,242 @@ class _Add_EditTransactionPageState extends State<Add_EditTransactionPage> {
         title: Text(title),
       ),
       body: Form(
+          key: formKey,
           child: ListView(
-        children: [
-          DateTimePicker(
-            controller: _transactionDateController,
-            decoration: const InputDecoration(
-              hintText: "Transaction date",
-              prefixIcon: Icon(
-                Icons.calendar_today,
-                color: const Color(0xFF1C2536),
-              ),
-              enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                  borderSide: BorderSide(
-                    color: Color(0xFF1C2536),
-                  )),
-              focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                  borderSide: BorderSide(
-                    color: Color(0xFF1C2536),
-                  )),
-            ),
-            //key: _formKey,
-            type: DateTimePickerType.date,
-            dateMask: "dd-MMM-yyyy",
-            firstDate: DateTime(1999),
-            lastDate: DateTime(2100),
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return "Date cannot be empty";
-              }
-              return null;
-            },
-            onChanged: (String? _) {
-              setState(() {
-                _transactionDateController.text = _!;
-              });
-            },
-          ),
-          TextFormField(
-            //key: _formKey,
-            controller: _transactionAmountController,
-            keyboardType: TextInputType.number,
-            decoration: const InputDecoration(
-              hintText: "Transaction amount",
-              prefixIcon: Icon(
-                Icons.currency_exchange,
-                color: const Color(0xFF1C2536),
-              ),
-              enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                  borderSide: BorderSide(
-                    color: Color(0xFF1C2536),
-                  )),
-              focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                  borderSide: BorderSide(
-                    color: Color(0xFF1C2536),
-                  )),
-            ),
-            validator: (String? value) {
-              if (value == null || value.isEmpty) {
-                return "Amount cannot be empty";
-              }
-              return null;
-            },
-            onChanged: (_) {
-              _transactionAmountController.text = _ == ""?"":NumberFormatter.format(double.parse(_.replaceAll(",", "")));
-              _transactionAmountController.selection = TextSelection.collapsed(offset: _transactionAmountController.text.length);
-            },
-          ),
-          TextFormField(
-            //key: _formKey,
-            controller: _transactionCommentsController,
-            keyboardType: TextInputType.text,
-            maxLength: 25,
-            decoration: const InputDecoration(
-              hintText: "Comments",
-              prefixIcon: Icon(
-                Icons.text_snippet,
-                color: const Color(0xFF1C2536),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                borderSide: BorderSide(
-                  color: Color(0xFF1C2536),
+            children: [
+              DateTimePicker(
+                controller: _transactionDateController,
+                decoration: const InputDecoration(
+                  hintText: "Transaction date",
+                  prefixIcon: Icon(
+                    Icons.calendar_today,
+                    color: const Color(0xFF1C2536),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                      borderSide: BorderSide(
+                        color: Color(0xFF1C2536),
+                      )),
+                  focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                      borderSide: BorderSide(
+                        color: Color(0xFF1C2536),
+                      )),
                 ),
+                //key: _formKey,
+                type: DateTimePickerType.date,
+                dateMask: "dd-MMM-yyyy",
+                firstDate: DateTime(1999),
+                lastDate: DateTime(2100),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return "Date cannot be empty";
+                  }
+                  return null;
+                },
+                onChanged: (String? _) {
+                  setState(() {
+                    _transactionDateController.text = _!;
+                  });
+                },
+                onSaved: (value){
+                  transactionModel.transactionDate = DateTime.parse(_transactionDateController.text);
+                },
               ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                borderSide: BorderSide(
-                  color: Color(0xFF1C2536),
+              TextFormField(
+                //key: _formKey,
+                controller: _transactionAmountController,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(
+                  hintText: "Transaction amount",
+                  prefixIcon: Icon(
+                    Icons.currency_exchange,
+                    color: const Color(0xFF1C2536),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                      borderSide: BorderSide(
+                        color: Color(0xFF1C2536),
+                      )),
+                  focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                      borderSide: BorderSide(
+                        color: Color(0xFF1C2536),
+                      )),
                 ),
+                validator: (String? value) {
+                  if (value == null || value.isEmpty) {
+                    return "Amount cannot be empty";
+                  }
+                  return null;
+                },
+                onChanged: (_) {
+                  _transactionAmountController.text = _ == ""
+                      ? ""
+                      : NumberFormatter.format(
+                          double.parse(_.replaceAll(",", "")));
+                  _transactionAmountController.selection =
+                      TextSelection.collapsed(
+                          offset: _transactionAmountController.text.length);
+                },
+                onSaved: (value){
+                  transactionModel.amount = double.parse(_transactionAmountController.text.replaceAll(",", ""));
+                },
               ),
-            ),
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return "Comments cannot be empty";
-              }
-              return null;
-            },
-            onChanged: (_) {
-              _transactionCommentsController.text = _;
-              _transactionCommentsController.selection = TextSelection.collapsed(offset: _transactionCommentsController.text.length);
-            },
-          ),
-          ListTile(
-            shape: RoundedRectangleBorder(
-                side: BorderSide(width: 1),
-                borderRadius: BorderRadius.circular(20.0)),
-            title: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text("Category:"),
-                Text(
-                  "If none is selected, Other will be selected by default",
-                  style: TextStyle(fontStyle: FontStyle.italic),
+              TextFormField(
+                controller: _transactionCommentsController,
+                keyboardType: TextInputType.text,
+                maxLength: 25,
+                decoration: const InputDecoration(
+                  hintText: "Comments",
+                  prefixIcon: Icon(
+                    Icons.text_snippet,
+                    color: const Color(0xFF1C2536),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                    borderSide: BorderSide(
+                      color: Color(0xFF1C2536),
+                    ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                    borderSide: BorderSide(
+                      color: Color(0xFF1C2536),
+                    ),
+                  ),
                 ),
-                SizedBox(
-                  height: 20,
-                )
-              ],
-            ),
-            subtitle: GridView.count(
-              physics: NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              childAspectRatio: 1.5,
-              crossAxisCount: 3,
-              children: categoryList.map((e) {
-                int index = categoryList.indexOf(e);
-                return GestureDetector(
-                    onTap: () {
-                      setState(() {
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return "Comments cannot be empty";
+                  }
+                  return null;
+                },
+                onChanged: (_) {
+                  _transactionCommentsController.text = _;
+                  _transactionCommentsController.selection =
+                      TextSelection.collapsed(
+                          offset: _transactionCommentsController.text.length);
+                },
+                onSaved: (value){
+                  transactionModel.comments = _transactionCommentsController.text;
+                },
+              ),
+              ListTile(
+                shape: RoundedRectangleBorder(
+                    side: BorderSide(width: 1),
+                    borderRadius: BorderRadius.circular(20.0)),
+                title: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text("Category:"),
+                    Text(
+                      "If none is selected, Other will be selected by default",
+                      style: TextStyle(fontStyle: FontStyle.italic),
+                    ),
+                    SizedBox(
+                      height: 20,
+                    )
+                  ],
+                ),
+                subtitle: GridView.count(
+                  physics: NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  childAspectRatio: 1.5,
+                  crossAxisCount: 3,
+                  children: categoryList.map((e) {
+                    int index = categoryList.indexOf(e);
+                    return GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            if (_prevSelectedIndex != -1) {
+                              _isSelectedList[_prevSelectedIndex] =
+                                  !_isSelectedList[_prevSelectedIndex];
+                            }
 
-                        if(_prevSelectedIndex != -1){
-                          _isSelectedList[_prevSelectedIndex] = !_isSelectedList[_prevSelectedIndex];
-                        }
+                            //Select only one
+                            _isSelectedList[index] = !_isSelectedList[index];
 
-                        //Select only one
-                        _isSelectedList[index] = !_isSelectedList[index];
-
-                        //Save the selected index
-                        if (_isSelectedList[index]) {
-                          _currentSelectedIndex = index;
-                          _prevSelectedIndex = index;
-                        }
-                      });
-                    },
-                    child: Column(
-                      children: [
-                        CircleAvatar(
-                          child: Icon(
-                            categoryList[index].icon,
-                            color: _isSelectedList[index]
-                                ? Colors.white
-                                : Colors.black,
-                          ),
-                          backgroundColor: _isSelectedList[index]
-                              ? const Color(0xFF1C2536)
-                              : Colors.grey[300],
-                        ),
-                        Text(e.name),
-                      ],
-                    ));
-              }).toList(),
-            ),
-          ),
-          Container(
-            decoration: BoxDecoration(
-                border: Border.all(color: Colors.black),
-                borderRadius: BorderRadius.circular(20.0)),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Text("Debit"),
-                Transform.scale(
-                  scale: 1.5,
-                  child: Switch(
-                      thumbIcon: thumbIcon,
-                      value: _selectedTransactionType == TransactionType.CREDIT,
-                      activeColor: Colors.white,
-                      activeTrackColor: Colors.greenAccent,
-                      inactiveThumbColor: Colors.white,
-                      inactiveTrackColor: Colors.redAccent,
-                      onChanged: (bool value) {
-                        setState(() {
-                          _selectedTransactionType = value
-                              ? TransactionType.CREDIT
-                              : TransactionType.DEBIT;
-                        });
-                      }),
+                            //Save the selected index
+                            if (_isSelectedList[index]) {
+                              _currentSelectedIndex = index;
+                              _prevSelectedIndex = index;
+                            }
+                          });
+                        },
+                        child: Column(
+                          children: [
+                            CircleAvatar(
+                              child: Icon(
+                                categoryList[index].icon,
+                                color: _isSelectedList[index]
+                                    ? Colors.white
+                                    : Colors.black,
+                              ),
+                              backgroundColor: _isSelectedList[index]
+                                  ? const Color(0xFF1C2536)
+                                  : Colors.grey[300],
+                            ),
+                            Text(e.name),
+                          ],
+                        ));
+                  }).toList(),
                 ),
-                Text("Credit"),
-              ],
-            ),
-          ),
-          Container(
-            decoration: BoxDecoration(
-                color: const Color(0xFF1C2536),
-                borderRadius: BorderRadius.circular(20.0)),
-            child: TextButton(
-              onPressed: () {
-                saveTransaction();
-              },
-              child: Text(
-                "Save",
-                style: TextStyle(color: Colors.white),
               ),
-            ),
-          )
-        ]
-            .map((e) => Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: e,
-                ))
-            .toList(),
-      )),
+              Container(
+                decoration: BoxDecoration(
+                    border: Border.all(color: Colors.black),
+                    borderRadius: BorderRadius.circular(20.0)),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Text("Debit"),
+                    Transform.scale(
+                      scale: 1.5,
+                      child: Switch(
+                          thumbIcon: thumbIcon,
+                          value: _selectedTransactionType ==
+                              TransactionType.CREDIT,
+                          activeColor: Colors.white,
+                          activeTrackColor: Colors.greenAccent,
+                          inactiveThumbColor: Colors.white,
+                          inactiveTrackColor: Colors.redAccent,
+                          onChanged: (bool value) {
+                            setState(() {
+                              _selectedTransactionType = value
+                                  ? TransactionType.CREDIT
+                                  : TransactionType.DEBIT;
+                            });
+                          }),
+                    ),
+                    Text("Credit"),
+                  ],
+                ),
+              ),
+              Container(
+                decoration: BoxDecoration(
+                    color: const Color(0xFF1C2536),
+                    borderRadius: BorderRadius.circular(20.0)),
+                child: TextButton(
+                  onPressed: () {
+                    if(formKey.currentState!.validate()){
+                      formKey.currentState!.save();
+                      saveTransaction();
+                    }
+                  },
+                  child: Text(
+                    "Save",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+              )
+            ]
+                .map((e) => Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: e,
+                    ))
+                .toList(),
+          )),
     );
   }
 }

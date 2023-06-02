@@ -7,6 +7,7 @@ import 'package:my_cash_flow/pages/base-page.dart';
 
 class AddEditSavingsPage extends StatefulWidget {
   SavingsModel? existingSavingsModel;
+
   AddEditSavingsPage({Key? key, this.existingSavingsModel}) : super(key: key);
 
   @override
@@ -14,22 +15,22 @@ class AddEditSavingsPage extends StatefulWidget {
 }
 
 class _AddEditSavingsPageState extends State<AddEditSavingsPage> {
+  late GlobalKey<FormState> formKey;
+
   SavingsModel savingsModel = SavingsModel();
-  
+
   TextEditingController _savingNameController = TextEditingController();
   int _percentageToSave = 0;
   TextEditingController _savingTargetAmountController = TextEditingController();
-  
-  save()async{
+
+  save() async {
     int accountId = await AccountDbHelper.instance.getSelectedAccountId();
 
-    savingsModel.savingName = _savingNameController.text;
-    savingsModel.targetAmount = double.parse(_savingTargetAmountController.text.replaceAll(",", ""));
     savingsModel.percentage = _percentageToSave;
-    
+
     savingsModel.accountId = accountId;
-    
-    SavingsDbHelper.instance.save(savingsModel).then((value){
+
+    SavingsDbHelper.instance.save(savingsModel).then((value) {
       Navigator.pop(context);
       Navigator.pop(context);
 
@@ -44,30 +45,38 @@ class _AddEditSavingsPageState extends State<AddEditSavingsPage> {
   @override
   void initState() {
     super.initState();
-    
-    if(widget.existingSavingsModel != null){
+
+    formKey = GlobalKey<FormState>();
+
+    if (widget.existingSavingsModel != null) {
       savingsModel = widget.existingSavingsModel!;
-      
+
       _savingNameController.text = savingsModel.savingName;
       _percentageToSave = savingsModel.percentage;
-      _savingTargetAmountController.text = NumberFormatter.format(savingsModel.targetAmount);
+      _savingTargetAmountController.text =
+          NumberFormatter.format(savingsModel.targetAmount);
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text("Add saving"),
-        ),
-        body: ListView(
+      appBar: AppBar(
+        title: Text("Add saving"),
+      ),
+      body: Form(
+        key: formKey,
+        child: ListView(
           children: [
-            TextField(
+            TextFormField(
               controller: _savingNameController,
               maxLength: 15,
               decoration: const InputDecoration(
                 hintText: "Saving name",
-                prefixIcon: Icon(Icons.savings,color: const Color(0xFF1C2536),),
+                prefixIcon: Icon(
+                  Icons.savings,
+                  color: const Color(0xFF1C2536),
+                ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.all(Radius.circular(20.0)),
                   borderSide: BorderSide(
@@ -81,19 +90,32 @@ class _AddEditSavingsPageState extends State<AddEditSavingsPage> {
                   ),
                 ),
               ),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return "Saving name cannot be empty";
+                }
+                return null;
+              },
               onChanged: (String? value) {
                 setState(() {
                   _savingNameController.text = value ?? "";
-                  _savingNameController.selection = TextSelection.collapsed(offset: _savingNameController.text.length);
+                  _savingNameController.selection = TextSelection.collapsed(
+                      offset: _savingNameController.text.length);
                 });
               },
+              onSaved: (value) {
+                savingsModel.savingName = _savingNameController.text;
+              },
             ),
-            TextField(
+            TextFormField(
               controller: _savingTargetAmountController,
               keyboardType: TextInputType.number,
               decoration: const InputDecoration(
                 hintText: "Target amount",
-                prefixIcon: Icon(Icons.attach_money, color: const Color(0xFF1C2536),),
+                prefixIcon: Icon(
+                  Icons.attach_money,
+                  color: const Color(0xFF1C2536),
+                ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.all(Radius.circular(20.0)),
                   borderSide: BorderSide(
@@ -107,11 +129,24 @@ class _AddEditSavingsPageState extends State<AddEditSavingsPage> {
                   ),
                 ),
               ),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return "Saving amount cannot be empty";
+                }
+                return null;
+              },
               onChanged: (String value) {
                 setState(() {
-                  _savingTargetAmountController.text = NumberFormatter.format(double.parse(value.replaceAll(",", "")));
-                  _savingTargetAmountController.selection = TextSelection.collapsed(offset: _savingTargetAmountController.text.length);
+                  _savingTargetAmountController.text = NumberFormatter.format(
+                      double.parse(value.replaceAll(",", "")));
+                  _savingTargetAmountController.selection =
+                      TextSelection.collapsed(
+                          offset: _savingTargetAmountController.text.length);
                 });
+              },
+              onSaved: (value) {
+                savingsModel.targetAmount = double.parse(
+                    _savingTargetAmountController.text.replaceAll(",", ""));
               },
             ),
             ListTile(
@@ -122,12 +157,13 @@ class _AddEditSavingsPageState extends State<AddEditSavingsPage> {
               title: Text("% to save of current balance"),
               subtitle: Slider(
                 activeColor: const Color(0xFF1C2536),
-                value: (_percentageToSave/100).toDouble(),
+                value: (_percentageToSave / 100).toDouble(),
                 onChanged: (double value) {
-                setState(() {
-                  _percentageToSave = (value*100).toInt();
-                });
-              },),
+                  setState(() {
+                    _percentageToSave = (value * 100).toInt();
+                  });
+                },
+              ),
               trailing: Text("$_percentageToSave%"),
             ),
             Container(
@@ -136,7 +172,10 @@ class _AddEditSavingsPageState extends State<AddEditSavingsPage> {
                   borderRadius: BorderRadius.circular(20.0)),
               child: TextButton(
                 onPressed: () {
-                  save();
+                  if (formKey.currentState!.validate()) {
+                    formKey.currentState!.save();
+                    save();
+                  }
                 },
                 child: Text(
                   "Save",
@@ -144,7 +183,14 @@ class _AddEditSavingsPageState extends State<AddEditSavingsPage> {
                 ),
               ),
             )
-          ].map((e) => Padding(padding: const EdgeInsets.all(20.0),child: e,)).toList(),
-        ),);
+          ]
+              .map((e) => Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: e,
+                  ))
+              .toList(),
+        ),
+      ),
+    );
   }
 }

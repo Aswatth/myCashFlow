@@ -16,35 +16,35 @@ class AddEditAccountsPage extends StatefulWidget {
 
 class _AddEditAccountsPageState extends State<AddEditAccountsPage> {
 
+  late GlobalKey<FormState> formKey;
+
   AccountModel accountModel = AccountModel();
 
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   TextEditingController _accountNameController = TextEditingController();
   TextEditingController _currentBalanceController = TextEditingController();
   TextEditingController _currencyController = TextEditingController();
 
   saveAccount() {
-    if (_formKey.currentState!.validate()) {
-      _formKey.currentState!.save();
-      AccountDbHelper.instance.save(accountModel).then((_) {
-        if(widget.existingAccountModel != null){
-          Navigator.pop(context); //Popping account creation page from stack
-          Navigator.pop(context); //Popping older accounts page from stack
+    AccountDbHelper.instance.save(accountModel).then((_) {
+      if(widget.existingAccountModel != null){
+        Navigator.pop(context); //Popping account creation page from stack
+        Navigator.pop(context); //Popping older accounts page from stack
 
-          //Navigation stack ..... -> newer Accounts Page
-          Navigator.push(context, MaterialPageRoute(builder: (_) => AccountPage()));
-        }
-        else{
-          //Clearing navigation stack and navigating to home page
-          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_) => BasePage(pageIndex: 3)), (route)=>false);
-        }
-      });
-    }
+        //Navigation stack ..... -> newer Accounts Page
+        Navigator.push(context, MaterialPageRoute(builder: (_) => AccountPage()));
+      }
+      else{
+        //Clearing navigation stack and navigating to home page
+        Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_) => BasePage(pageIndex: 3)), (route)=>false);
+      }
+    });
   }
 
   @override
   void initState() {
     super.initState();
+
+    formKey = GlobalKey<FormState>();
 
     if(widget.existingAccountModel != null){
       accountModel = widget.existingAccountModel!;
@@ -62,7 +62,7 @@ class _AddEditAccountsPageState extends State<AddEditAccountsPage> {
       ),
       body: Center(
           child: Form(
-            key: _formKey,
+            key: formKey,
             child: ListView(
               //mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -163,6 +163,9 @@ class _AddEditAccountsPageState extends State<AddEditAccountsPage> {
                     if (value == null || value.isEmpty) {
                       return "Currency cannot be empty";
                     }
+                    if(value.length != 3){
+                      return "Invalid currency";
+                    }
                     return null;
                   },
                   onChanged: (value){
@@ -184,7 +187,10 @@ class _AddEditAccountsPageState extends State<AddEditAccountsPage> {
                       borderRadius: BorderRadius.circular(20.0)),
                   child: TextButton(
                     onPressed: () {
-                      saveAccount();
+                      if (formKey.currentState!.validate()) {
+                        formKey.currentState!.save();
+                        saveAccount();
+                      }
                     },
                     child: Text(
                       "Save",
