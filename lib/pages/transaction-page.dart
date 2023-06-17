@@ -95,6 +95,12 @@ class _TransactionPageState extends State<TransactionPage> {
     if (endDateController.text.isNotEmpty) {
       transactionFilterModel.endDate = DateTime.parse(endDateController.text);
     }
+    if(minAmountController.text.isNotEmpty){
+      transactionFilterModel.minAmount = double.parse(minAmountController.text.replaceAll(",", ""));
+    }
+    if(maxAmountController.text.isNotEmpty){
+      transactionFilterModel.maxAmount = double.parse(maxAmountController.text.replaceAll(",", ""));
+    }
     transactionFilterModel.selectedCategories = categoryList
         .where((element) => _isSelected[categoryList.indexOf(element)])
         .map((e) => e.name)
