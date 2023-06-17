@@ -20,11 +20,15 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
   TextEditingController oldPasswordController = TextEditingController();
   TextEditingController newPasswordController = TextEditingController();
 
-  Future<void> save(String oldPassword, String newPassword)async{
+  Future<bool> save(String oldPassword, String newPassword)async{
     String existingPassword = await PasswordDbHelper.instance.getPassword();
 
     if(oldPassword == existingPassword){
       await PasswordDbHelper.instance.setPassword(newPassword);
+      return true;
+    }
+    else{
+      return false;
     }
   }
 
@@ -158,7 +162,11 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                   if(formKey.currentState!.validate()){
                     formKey.currentState!.save();
                     save(oldPasswordController.text, newPasswordController.text).then((value) {
-                      Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_) => BasePage(pageIndex: 0,)), (route)=>false);
+                      if(value) {
+                        Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_) => BasePage(pageIndex: 0,)), (route)=>false);
+                      } else{
+                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Incorrect old password")));
+                      }
                     });
                   }
                 },
